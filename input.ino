@@ -3,14 +3,14 @@ void input() {
   int W = gb.display.width();
 
   if (gb.buttons.repeat(BUTTON_A, 0)) {
-    nextWorld(world, newWorld, H, W);
-    bool **tmp = world;
-    world = newWorld;
-    newWorld = tmp;
+    nextBoard(board, newBoard, H, W);
+    Color **tmp = board;
+    board = newBoard;
+    newBoard = tmp;
   }
 
   if (gb.buttons.held(BUTTON_B, 25)) {
-    initializeWorld(world, H, W);
+    initializeBoard(board, H, W);
     ignoreRelease = true;
   }
 

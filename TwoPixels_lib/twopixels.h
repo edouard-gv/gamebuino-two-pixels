@@ -5,6 +5,7 @@
 #ifndef TWO_PIXELS_H
 #define TWO_PIXELS_H
 
+#ifndef _GAMEBUINO_META_GRAPHICS_H_
 enum class Color : uint16_t {
     white = 0xFFFF,
     gray = 0xACD0,
@@ -23,6 +24,7 @@ enum class Color : uint16_t {
     blue = 0x4439,
     lightblue = 0x7DDF,
 };
+#endif //_GAMEBUINO_META_GRAPHICS_H_
 
 const Color ALPHA = Color::yellow;
 const Color BETA = Color::blue;
@@ -33,9 +35,17 @@ const Color OMEGA = Color::green;
 void nextBoard(Color **board, Color **newBoard, int h, int w);
 
 void nextBoard(Color **board, Color **newBoard, int h, int w) {
-    for (int i=0; i < h; i++) {
+    for (int i = 0; i < h; i++) {
         for (int j = 0; j < w; ++j) {
             newBoard[i][j] = board[i][j];
+        }
+    }
+}
+
+void initializeBoard(Color **board, int h, int w) {
+    for (int i = 0; i < h; ++i) {
+        for (int j = 0; j < w; ++j) {
+            board[i][j] = ALPHA;
         }
     }
 }

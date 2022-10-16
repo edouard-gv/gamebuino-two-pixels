@@ -1,8 +1,8 @@
 #include <Gamebuino-Meta.h>
 #include "TwoPixels_lib/twopixels.h"
-bool **world;
-bool **newWorld;
-bool **savedWorld;
+Color **board;
+Color **newBoard;
+//Color **savedWorld;
 
 bool red;
 bool ignoreRelease;
@@ -15,17 +15,17 @@ void setup() {
   const int height = gb.display.height();
   const int width = gb.display.width();
 
-  world = new bool*[height];
-  newWorld = new bool*[height];
+  board = new Color*[height];
+  newBoard = new Color*[height];
   //savedWorld = new bool*[height];
 
   for (int i=0; i < height; i++) {
-    world[i] = new bool[width];
-    newWorld[i] = new bool[width];
+    board[i] = new Color[width];
+    newBoard[i] = new Color[width];
     //savedWorld[i] = new bool[width];
   }
 
-  initializeWorld(world, height, width);
+  initializeBoard(board, height, width);
 
   //copyWorld(world, savedWorld, height, width);
 
