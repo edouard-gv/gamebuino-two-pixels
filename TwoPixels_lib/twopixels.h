@@ -32,22 +32,41 @@ const Color GAMMA = Color::red;
 const Color DELTA = Color::purple;
 const Color OMEGA = Color::green;
 
-void nextBoard(Color **board, Color **newBoard, int h, int w);
+enum Direction {
+    left_dir, right_dir, up_dir, down_dir
+};
 
-void nextBoard(Color **board, Color **newBoard, int h, int w) {
-    for (int i = 0; i < h; i++) {
-        for (int j = 0; j < w; ++j) {
-            newBoard[i][j] = board[i][j];
+
+bool isMoveOK(Color **board, int x, int y, Direction direction);
+
+Color **createBoardAtLevel(int *w, int *h, int level) {
+    *w = 2;
+    *h = 3;
+
+    Color **newBoard = new Color *[*w];
+    for (int x = 0; x < *w; ++x) {
+        newBoard[x] = new Color[*h];
+        for (int y = 0; y < *h; ++y) {
+            newBoard[x][y] = ALPHA;
         }
     }
+
+    newBoard[0][2] = BETA;
+    return newBoard;
 }
 
-void initializeBoard(Color **board, int h, int w) {
-    for (int i = 0; i < h; ++i) {
-        for (int j = 0; j < w; ++j) {
-            board[i][j] = ALPHA;
-        }
-    }
+bool isMoveOK(Color **board, int W, int H, int x, int y, Direction direction) {
+    switch (direction) {
+        case Direction::left_dir:
+            return x > 0;
+        case Direction::right_dir:
+            return x < W-1;
+        case Direction::up_dir:
+            return y > 0;
+        case Direction::down_dir:
+            return y < H-1;
+        default: return false;
+    };
 }
 
 #endif //TWO_PIXELS_H
