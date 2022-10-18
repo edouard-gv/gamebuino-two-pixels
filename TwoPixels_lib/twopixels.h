@@ -33,39 +33,114 @@ const Color DELTA = Color::purple;
 const Color OMEGA = Color::green;
 
 enum Direction {
-    left_dir, right_dir, up_dir, down_dir
+    left_dir, right_dir, up_dir, down_dir, none
 };
 
 
 bool isMoveOK(Color **board, int x, int y, Direction direction);
 
-Color **createBoardAtLevel(int *w, int *h, int level) {
-    *w = 2;
-    *h = 3;
+Color **createAlphaBoard(int w, int h);
 
-    Color **newBoard = new Color *[*w];
-    for (int x = 0; x < *w; ++x) {
-        newBoard[x] = new Color[*h];
-        for (int y = 0; y < *h; ++y) {
+Color **createBoardAtLevel(int *pW, int *pH, int level) {
+    if (level == 1) {
+        *pW = 2;
+        *pH = 3;
+        Color **newBoard = createAlphaBoard(*pW, *pH);
+        newBoard[0][2] = BETA;
+        return newBoard;
+    }
+
+    if (level == 2) {
+        *pW = 3;
+        *pH = 3;
+        return createAlphaBoard(*pW, *pH);
+    }
+
+    if (level == 3) {
+        *pW = 3;
+        *pH = 3;
+
+        Color **newBoard = createAlphaBoard(*pW, *pH);
+        newBoard[1][1] = BETA;
+        return newBoard;
+    }
+
+    return nullptr;
+}
+
+Color **createAlphaBoard(int w, int h) {
+    auto **newBoard = new Color *[w];
+    for (int x = 0; x < w; ++x) {
+        newBoard[x] = new Color[h];
+        for (int y = 0; y < h; ++y) {
             newBoard[x][y] = ALPHA;
         }
     }
-
-    newBoard[0][2] = BETA;
     return newBoard;
 }
 
-bool isMoveOK(Color **board, int W, int H, int x, int y, Direction direction) {
+bool isMoveOK(Color **board, int w, int h, int x, int y, Direction direction) {
     switch (direction) {
         case Direction::left_dir:
             return x > 0;
         case Direction::right_dir:
-            return x < W-1;
+            return x < w - 1;
         case Direction::up_dir:
             return y > 0;
         case Direction::down_dir:
-            return y < H-1;
-        default: return false;
+            return y < h - 1;
+        default:
+            return false;
+    };
+}
+
+Direction **createEmptyLinks(int w, int h) {
+    auto **links = new Direction *[w];
+    for (int x = 0; x < w; ++x) {
+        links[x] = new Direction[h];
+        for (int y = 0; y < h; ++y) {
+            links[x][y] = Direction::none;
+        }
+    }
+    return links;
+}
+
+bool linkAndMoveIfLegit(Color **board, Direction **links, int w, int h, int *pX, int *pY, Direction direction) {
+    if (!isMoveOK(board, w, h, *pX, *pY, direction)) {
+        return false;
+    }
+
+    switch (direction) {
+        case Direction::left_dir:
+            if (board[*pX][*pY] == board[*pX - 1][*pY]) {
+                links[*pX][*pY] = direction;
+                *pX = *pX - 1;
+                return true;
+            } else
+                return false;
+        case Direction::right_dir:
+            if (board[*pX][*pY] == board[*pX + 1][*pY]) {
+                links[*pX][*pY] = direction;
+                *pX = *pX + 1;
+                return true;
+            } else
+                return false;
+        case Direction::up_dir:
+            if (board[*pX][*pY] == board[*pX][*pY - 1]) {
+                links[*pX][*pY] = direction;
+                *pY = *pY - 1;
+                return true;
+            } else
+                return false;
+        case Direction::down_dir:
+            if (board[*pX][*pY] == board[*pX][*pY + 1]) {
+                links[*pX][*pY] = direction;
+                *pY = *pY + 1;
+                return true;
+            } else
+                return false;
+        default:
+            return false;
     };
 }
 
