@@ -26,20 +26,6 @@ Color **createEmptyBoard(int W, int H) {
     return newBoard;
 }
 
-void deleteBoard(Color **board, int W) {
-    for (int x = 0; x < W; x++) {
-        delete board[x];
-    }
-    delete board;
-}
-
-void deleteLinks(Direction **links, int W) {
-    for (int x = 0; x < W; x++) {
-        delete links[x];
-    }
-    delete links;
-}
-
 std::string scoord(int x, int y) { return std::to_string(x) + "," + std::to_string(y) + ": "; }
 
 void assertExpectedBoard(Color **expected, Color **board, int W, int H) {
@@ -78,10 +64,20 @@ TEST(TwoPixelsTestSuite, moveOKs) {
 
     Color **board = createBoardAtLevel(&W, &H, 1);
 
-    EXPECT_TRUE(isMoveOK(board, W, H, 1, 0, Direction::left_dir));
-    EXPECT_TRUE(isMoveOK(board, W, H, 1, 0, Direction::down_dir));
-    EXPECT_TRUE(isMoveOK(board, W, H, 0, 1, Direction::right_dir));
-    EXPECT_TRUE(isMoveOK(board, W, H, 0, 1, Direction::up_dir));
+    int x = 1;
+    int y = 0;
+    EXPECT_TRUE(moveIfLegit(board, W, H, &x, &y, Direction::left_dir));
+    EXPECT_EQ(0, x);
+    EXPECT_EQ(0, y);
+    EXPECT_TRUE(moveIfLegit(board, W, H, &x, &y, Direction::down_dir));
+    EXPECT_EQ(0, x);
+    EXPECT_EQ(1, y);
+    EXPECT_TRUE(moveIfLegit(board, W, H, &x, &y, Direction::right_dir));
+    EXPECT_EQ(1, x);
+    EXPECT_EQ(1, y);
+    EXPECT_TRUE(moveIfLegit(board, W, H, &x, &y, Direction::up_dir));
+    EXPECT_EQ(1, x);
+    EXPECT_EQ(0, y);
 
     deleteBoard(board, W);
 }
@@ -92,16 +88,28 @@ TEST(TwoPixelsTestSuite, moveKOs) {
 
     Color **board = createBoardAtLevel(&W, &H, 1);
 
-    EXPECT_FALSE(isMoveOK(board, W, H, 1, 0, Direction::right_dir));
-    EXPECT_FALSE(isMoveOK(board, W, H, 1, 0, Direction::up_dir));
-    EXPECT_FALSE(isMoveOK(board, W, H, 0, 2, Direction::left_dir));
-    EXPECT_FALSE(isMoveOK(board, W, H, 0, 2, Direction::down_dir));
+    int x = 1;
+    int y = 0;
+    EXPECT_FALSE(moveIfLegit(board, W, H, &x, &y, Direction::right_dir));
+    EXPECT_EQ(1, x);
+    EXPECT_EQ(0, y);
+    EXPECT_FALSE(moveIfLegit(board, W, H, &x, &y, Direction::up_dir));
+    EXPECT_EQ(1, x);
+    EXPECT_EQ(0, y);
+
+    x = 0;
+    y = 2;
+    EXPECT_FALSE(moveIfLegit(board, W, H, &x, &y, Direction::left_dir));
+    EXPECT_EQ(0, x);
+    EXPECT_EQ(2, y);
+    EXPECT_FALSE(moveIfLegit(board, W, H, &x, &y, Direction::down_dir));
+    EXPECT_EQ(0, x);
+    EXPECT_EQ(2, y);
 
     deleteBoard(board, W);
 }
 
-TEST(TwoPixelsTestSuite, linksOKUnitary)
-{
+TEST(TwoPixelsTestSuite, linksOKUnitary) {
     int W = 0;
     int H = 0;
 
@@ -120,8 +128,7 @@ TEST(TwoPixelsTestSuite, linksOKUnitary)
     deleteLinks(links, W);
 }
 
-TEST(TwoPixelsTestSuite, linksOKWalk)
-{
+TEST(TwoPixelsTestSuite, linksOKWalk) {
     int W = 0;
     int H = 0;
 
@@ -155,8 +162,7 @@ TEST(TwoPixelsTestSuite, linksOKWalk)
     deleteLinks(links, W);
 }
 
-TEST(TwoPixelsTestSuite, linksKOForColor)
-{
+TEST(TwoPixelsTestSuite, linksKOForColor) {
     int W = 0;
     int H = 0;
 
@@ -187,8 +193,7 @@ TEST(TwoPixelsTestSuite, linksKOForColor)
 
 }
 
-TEST(TwoPixelsTestSuite, linksKOForBorders)
-{
+TEST(TwoPixelsTestSuite, linksKOForBorders) {
     int W = 0;
     int H = 0;
 
@@ -203,6 +208,12 @@ TEST(TwoPixelsTestSuite, linksKOForBorders)
 
 }
 
+TEST(TwoPixelsTestSuite, resetLinks) {
+    Direction **links = createEmptyLinks(2, 3);
+    links[1][1] = Direction::right_dir;
+    resetLinks(links, 2, 3);
+    EXPECT_EQ(Direction::none, links[1][1]);
+}
 
 
 TEST(TwoPixelsTestSuite, sandbox) {

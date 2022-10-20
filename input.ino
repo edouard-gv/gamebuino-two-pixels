@@ -6,25 +6,21 @@ void input() {
 
     if (gb.buttons.released(BUTTON_A)) {
       isLinking = false;
-      links = createEmptyLinks(W, H); //TODO Empty it instead of create a new one;
+      resetLinks(links, W, H);
     }
 
     if (!isLinking) {
       if (gb.buttons.pressed(BUTTON_UP)) {
-          if (isMoveOK(board, W, H, cursor_x, cursor_y, Direction::up_dir))
-              cursor_y--;
+          moveIfLegit(board, W, H, &cursor_x, &cursor_y, Direction::up_dir);
       }
       if (gb.buttons.pressed(BUTTON_RIGHT)) {
-          if (isMoveOK(board, W, H, cursor_x, cursor_y, Direction::right_dir))
-              cursor_x++;
+          moveIfLegit(board, W, H, &cursor_x, &cursor_y, Direction::right_dir);
       }
       if (gb.buttons.pressed(BUTTON_DOWN)) {
-          if (isMoveOK(board, W, H, cursor_x, cursor_y, Direction::down_dir))
-              cursor_y++;
+          moveIfLegit(board, W, H, &cursor_x, &cursor_y, Direction::down_dir);
       }
       if (gb.buttons.pressed(BUTTON_LEFT)) {
-          if (isMoveOK(board, W, H, cursor_x, cursor_y, Direction::left_dir))
-              cursor_x--;
+          moveIfLegit(board, W, H, &cursor_x, &cursor_y, Direction::left_dir);
       }
     }
 
@@ -46,8 +42,10 @@ void input() {
 
     if (gb.buttons.released(BUTTON_B)) {
         if (!ignoreRelease) {
-            board = createBoardAtLevel(&W, &H, level++); //TODO delete before
-            links = createEmptyLinks(W, H); //TODO delete before
+            deleteBoard(board, W);
+            deleteLinks(links, W);
+            board = createBoardAtLevel(&W, &H, level++);
+            links = createEmptyLinks(W, H);
         } else {
             ignoreRelease = false;
         }
@@ -56,8 +54,10 @@ void input() {
     if (gb.buttons.held(BUTTON_B, 25)) {
         ignoreRelease = true;
         level = 1;
-        board = createBoardAtLevel(&W, &H, level); //TODO delete before
-        links = createEmptyLinks(W, H); //TODO delete before
+        deleteBoard(board, W);
+        deleteLinks(links, W);
+        board = createBoardAtLevel(&W, &H, level);
+        links = createEmptyLinks(W, H);
     }
 }
 

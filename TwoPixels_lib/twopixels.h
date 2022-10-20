@@ -79,16 +79,27 @@ Color **createAlphaBoard(int w, int h) {
     return newBoard;
 }
 
-bool isMoveOK(Color **board, int w, int h, int x, int y, Direction direction) {
+bool moveIfLegit(Color **board, int w, int h, int *pX, int *pY, Direction direction) {
     switch (direction) {
         case Direction::left_dir:
-            return x > 0;
+            return ((*pX > 0) && ((*pX = *pX - 1) || true)); //same as below, don't know what's better
         case Direction::right_dir:
-            return x < w - 1;
+            if (*pX < w - 1) {
+                *pX = *pX + 1;
+                return true;
+            } else return false;
         case Direction::up_dir:
-            return y > 0;
+            if (*pY > 0) {
+                *pY = *pY - 1;
+                return true;
+            } else
+                return false;
         case Direction::down_dir:
-            return y < h - 1;
+            if (*pY < h - 1) {
+                *pY = *pY + 1;
+                return true;
+            } else
+                return false;
         default:
             return false;
     };
@@ -106,7 +117,10 @@ Direction **createEmptyLinks(int w, int h) {
 }
 
 bool linkAndMoveIfLegit(Color **board, Direction **links, int w, int h, int *pX, int *pY, Direction direction) {
-    if (!isMoveOK(board, w, h, *pX, *pY, direction)) {
+    int pCopyX = *pX;
+    int pCopyY = *pY;
+
+    if (!moveIfLegit(board, w, h, &pCopyX, &pCopyY, direction)) {
         return false;
     }
 
@@ -142,6 +156,28 @@ bool linkAndMoveIfLegit(Color **board, Direction **links, int w, int h, int *pX,
         default:
             return false;
     };
+}
+
+void resetLinks(Direction **links, int w, int h) {
+    for (int x = 0; x < w; ++x) {
+        for (int y = 0; y < h; ++y) {
+            links[x][y] = Direction::none;
+        }
+    }
+}
+
+void deleteBoard(Color **board, int W) {
+    for (int x = 0; x < W; x++) {
+        delete board[x];
+    }
+    delete board;
+}
+
+void deleteLinks(Direction **links, int W) {
+    for (int x = 0; x < W; x++) {
+        delete links[x];
+    }
+    delete links;
 }
 
 #endif //TWO_PIXELS_H
