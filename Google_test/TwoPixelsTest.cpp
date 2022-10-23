@@ -52,7 +52,7 @@ TEST(TwoPixelsTestSuite, InitializeFirstLevel) {
 
 TEST(TwoPixelsTestSuite, nextLevel) {
     EXPECT_EQ(2, nextLevel(1));
-    EXPECT_EQ(countLevels(), nextLevel(countLevels()-1));
+    EXPECT_EQ(countLevels(), nextLevel(countLevels() - 1));
     EXPECT_EQ(1, nextLevel(countLevels()));
 }
 
@@ -151,9 +151,14 @@ TEST(TwoPixelsTestSuite, linksOKWalk) {
     EXPECT_EQ(1, x);
     EXPECT_EQ(0, y);
 
+    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::left_dir));
+    EXPECT_EQ(Direction::left_dir, links[1][0]);
+    EXPECT_EQ(0, x);
+    EXPECT_EQ(0, y);
+
     EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::down_dir));
-    EXPECT_EQ(Direction::down_dir, links[1][0]);
-    EXPECT_EQ(1, x);
+    EXPECT_EQ(Direction::down_dir, links[0][0]);
+    EXPECT_EQ(0, x);
     EXPECT_EQ(1, y);
 
     deleteBoard(board, W);
@@ -258,6 +263,81 @@ TEST(TwoPixelsTestSuite, linksRewind) {
 
     deleteBoard(board, W);
     deleteLinks(links, W);
+}
+
+TEST(TwoPixelsTestSuite, simpleCycle) {
+    int W = 0;
+    int H = 0;
+
+    Color **board = createBoardAtLevel(&W, &H, 2);
+    Direction **links = createEmptyLinks(W, H);
+
+    links[1][1] = Direction::left_dir;
+    links[0][1] = Direction::down_dir;
+    links[0][2] = Direction::right_dir;
+    int x = 1;
+    int y = 2;
+
+    EXPECT_EQ(Direction::none, links[1][2]);
+    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::up_dir));
+
+    EXPECT_FALSE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::up_dir));
+    EXPECT_FALSE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::left_dir));
+    EXPECT_FALSE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::right_dir));
+
+    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::down_dir));
+    EXPECT_EQ(Direction::left_dir, links[1][1]);
+    EXPECT_EQ(Direction::none, links[1][2]);
+
+}
+
+TEST(TwoPixelsTestSuite, locking) {
+    Direction **links = createEmptyLinks(1, 1);
+    links[0][0] = Direction::right_dir;
+    lockLinksAt(links, 0, 0);
+    EXPECT_EQ(Direction::right_lock, links[0][0]);
+
+    links[0][0] = Direction::left_dir;
+    lockLinksAt(links, 0, 0);
+    EXPECT_EQ(Direction::left_lock, links[0][0]);
+
+    links[0][0] = Direction::up_dir;
+    lockLinksAt(links, 0, 0);
+    EXPECT_EQ(Direction::up_lock, links[0][0]);
+
+    links[0][0] = Direction::down_dir;
+    lockLinksAt(links, 0, 0);
+    EXPECT_EQ(Direction::down_lock, links[0][0]);
+}
+
+TEST(TwoPixelsTestSuite, unlocking) {
+    Direction **links = createEmptyLinks(1, 1);
+    links[0][0] = Direction::right_lock;
+    unlockLinksAt(links, 0, 0);
+    EXPECT_EQ(Direction::right_dir, links[0][0]);
+
+    links[0][0] = Direction::left_lock;
+    unlockLinksAt(links, 0, 0);
+    EXPECT_EQ(Direction::left_dir, links[0][0]);
+
+    links[0][0] = Direction::up_lock;
+    unlockLinksAt(links, 0, 0);
+    EXPECT_EQ(Direction::up_dir, links[0][0]);
+
+    links[0][0] = Direction::down_lock;
+    unlockLinksAt(links, 0, 0);
+    EXPECT_EQ(Direction::down_dir, links[0][0]);
+}
+
+TEST(TwoPixelsTestSuite, isLocked) {
+    EXPECT_TRUE(isLocked(Direction::down_lock));
+    EXPECT_TRUE(isLocked(Direction::up_lock));
+    EXPECT_TRUE(isLocked(Direction::left_lock));
+    EXPECT_TRUE(isLocked(Direction::right_lock));
+    EXPECT_FALSE(isLocked(Direction::down_dir));
+    EXPECT_FALSE(isLocked(Direction::up_dir));
+    EXPECT_FALSE(isLocked(Direction::left_dir));
+    EXPECT_FALSE(isLocked(Direction::right_dir));
 }
 
 TEST(TwoPixelsTestSuite, sandbox) {

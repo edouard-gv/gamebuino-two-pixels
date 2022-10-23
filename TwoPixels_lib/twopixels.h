@@ -33,7 +33,8 @@ const Color DELTA = Color::purple;
 const Color OMEGA = Color::green;
 
 enum Direction {
-    left_dir, right_dir, up_dir, down_dir, none
+    left_dir, right_dir, up_dir, down_dir, none,
+    left_lock, right_lock, up_lock, down_lock
 };
 
 
@@ -80,7 +81,7 @@ Color **createBoardAtLevel(int *pW, int *pH, int level) {
 }
 
 int nextLevel(int level) {
-    return (level % countLevels())+1;
+    return (level % countLevels()) + 1;
 }
 
 Direction **createEmptyLinks(int w, int h) {
@@ -172,6 +173,44 @@ Direction opposite(Direction direction) {
     }
 }
 
+Direction toggleLock(Direction direction) {
+    switch (direction) {
+        case Direction::left_dir:
+            return Direction::left_lock;
+        case Direction::right_dir:
+            return Direction::right_lock;
+        case Direction::up_dir:
+            return Direction::up_lock;
+        case Direction::down_dir:
+            return Direction::down_lock;
+        case Direction::left_lock:
+            return Direction::left_dir;
+        case Direction::right_lock:
+            return Direction::right_dir;
+        case Direction::up_lock:
+            return Direction::up_dir;
+        case Direction::down_lock:
+            return Direction::down_dir;
+        default:
+            return direction;
+    }
+}
+
+void lockLinksAt(Direction **links, int x, int y) {
+    links[x][y] = toggleLock(links[x][y]);
+}
+
+void unlockLinksAt(Direction **links, int x, int y) {
+    links[x][y] = toggleLock(links[x][y]);
+}
+
+bool isLocked(Direction direction) {
+    return (direction == Direction::down_lock ||
+            direction == Direction::up_lock ||
+            direction == Direction::left_lock ||
+            direction == Direction::right_lock);
+}
+
 bool linkAndMoveIfLegit(Color **board, Direction **links, int w, int h, int *pX, int *pY, Direction direction) {
     if (!isMoveLegit(w, h, *pX, *pY, direction)) {
         return false;
@@ -180,19 +219,33 @@ bool linkAndMoveIfLegit(Color **board, Direction **links, int w, int h, int *pX,
     int nextX = estimateNextX(*pX, direction);
     int nextY = estimateNextY(*pY, direction);
 
-    if (board[*pX][*pY] == board[nextX][nextY]) {
-        if (links[nextX][nextY] == opposite(direction)) {
-            links[*pX][*pY] = Direction::none;
-            links[nextX][nextY] = Direction::none;
+    if (!isLocked(links[*pX][*pY])) {
+        if (board[*pX][*pY] == board[nextX][nextY]) {
+            if (links[nextX][nextY] == opposite(direction)) { //rewind
+                links[*pX][*pY] = Direction::none;
+                links[nextX][nextY] = Direction::none;
+            } else {
+                links[*pX][*pY] = direction;
+                if (links[nextX][nextY] != none) {
+                    lockLinksAt(links, nextX, nextY);
+                }
+            }
+            *pX = nextX;
+            *pY = nextY;
+            return true;
         } else {
-            links[*pX][*pY] = direction;
+            return false;
         }
+    }
+    //we are locked
+    if (links[nextX][nextY] == opposite(direction)) {
+        unlockLinksAt(links, *pX, *pY);
+        links[nextX][nextY] = Direction::none;
         *pX = nextX;
         *pY = nextY;
         return true;
-    } else {
-        return false;
     }
+    return false;
 }
 
 #endif //TWO_PIXELS_H
