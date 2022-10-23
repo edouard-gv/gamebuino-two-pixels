@@ -37,9 +37,16 @@ enum Direction {
 };
 
 
-bool isMoveOK(Color **board, int x, int y, Direction direction);
-
-Color **createAlphaBoard(int w, int h);
+Color **createAlphaBoard(int w, int h) {
+    auto **newBoard = new Color *[w];
+    for (int x = 0; x < w; ++x) {
+        newBoard[x] = new Color[h];
+        for (int y = 0; y < h; ++y) {
+            newBoard[x][y] = ALPHA;
+        }
+    }
+    return newBoard;
+}
 
 Color **createBoardAtLevel(int *pW, int *pH, int level) {
     if (level == 1) {
@@ -68,43 +75,6 @@ Color **createBoardAtLevel(int *pW, int *pH, int level) {
     return nullptr;
 }
 
-Color **createAlphaBoard(int w, int h) {
-    auto **newBoard = new Color *[w];
-    for (int x = 0; x < w; ++x) {
-        newBoard[x] = new Color[h];
-        for (int y = 0; y < h; ++y) {
-            newBoard[x][y] = ALPHA;
-        }
-    }
-    return newBoard;
-}
-
-bool moveIfLegit(Color **board, int w, int h, int *pX, int *pY, Direction direction) {
-    switch (direction) {
-        case Direction::left_dir:
-            return ((*pX > 0) && ((*pX = *pX - 1) || true)); //same as below, don't know what's better
-        case Direction::right_dir:
-            if (*pX < w - 1) {
-                *pX = *pX + 1;
-                return true;
-            } else return false;
-        case Direction::up_dir:
-            if (*pY > 0) {
-                *pY = *pY - 1;
-                return true;
-            } else
-                return false;
-        case Direction::down_dir:
-            if (*pY < h - 1) {
-                *pY = *pY + 1;
-                return true;
-            } else
-                return false;
-        default:
-            return false;
-    };
-}
-
 Direction **createEmptyLinks(int w, int h) {
     auto **links = new Direction *[w];
     for (int x = 0; x < w; ++x) {
@@ -114,48 +84,6 @@ Direction **createEmptyLinks(int w, int h) {
         }
     }
     return links;
-}
-
-bool linkAndMoveIfLegit(Color **board, Direction **links, int w, int h, int *pX, int *pY, Direction direction) {
-    int pCopyX = *pX;
-    int pCopyY = *pY;
-
-    if (!moveIfLegit(board, w, h, &pCopyX, &pCopyY, direction)) {
-        return false;
-    }
-
-    switch (direction) {
-        case Direction::left_dir:
-            if (board[*pX][*pY] == board[*pX - 1][*pY]) {
-                links[*pX][*pY] = direction;
-                *pX = *pX - 1;
-                return true;
-            } else
-                return false;
-        case Direction::right_dir:
-            if (board[*pX][*pY] == board[*pX + 1][*pY]) {
-                links[*pX][*pY] = direction;
-                *pX = *pX + 1;
-                return true;
-            } else
-                return false;
-        case Direction::up_dir:
-            if (board[*pX][*pY] == board[*pX][*pY - 1]) {
-                links[*pX][*pY] = direction;
-                *pY = *pY - 1;
-                return true;
-            } else
-                return false;
-        case Direction::down_dir:
-            if (board[*pX][*pY] == board[*pX][*pY + 1]) {
-                links[*pX][*pY] = direction;
-                *pY = *pY + 1;
-                return true;
-            } else
-                return false;
-        default:
-            return false;
-    };
 }
 
 void resetLinks(Direction **links, int w, int h) {
@@ -178,6 +106,88 @@ void deleteLinks(Direction **links, int W) {
         delete links[x];
     }
     delete links;
+}
+
+int estimateNextX(int x, Direction direction) {
+    switch (direction) {
+        case Direction::left_dir:
+            return x - 1;
+        case Direction::right_dir:
+            return x + 1;
+        default:
+            return x;
+    }
+}
+
+int estimateNextY(int y, Direction direction) {
+    switch (direction) {
+        case Direction::up_dir:
+            return y - 1;
+        case Direction::down_dir:
+            return y + 1;
+        default:
+            return y;
+    }
+}
+
+bool isMoveLegit(int w, int h, Direction direction, int x, int y) {
+    return ((direction == left_dir) && (x > 0)) ||
+           ((direction == right_dir) && (x < w - 1)) ||
+           ((direction == up_dir) && (y > 0)) ||
+           ((direction == down_dir) && (y < h - 1));
+}
+
+bool moveIfLegit(Color **board, int w, int h, int *pX, int *pY, Direction direction) {
+    int nextX = estimateNextX(*pX, direction);
+    int nextY = estimateNextY(*pY, direction);
+
+    if (isMoveLegit(w, h, direction, *pX, *pY)) {
+        *pX = nextX;
+        *pY = nextY;
+        return true;
+    }
+    return false;
+}
+
+Direction opposite(Direction direction) {
+    switch (direction) {
+        case Direction::left_dir:
+            return Direction::right_dir;
+        case Direction::right_dir:
+            return Direction::left_dir;
+        case Direction::up_dir:
+            return Direction::down_dir;
+        case Direction::down_dir:
+            return Direction::up_dir;
+        default:
+            return direction;
+    }
+}
+
+bool linkAndMoveIfLegit(Color **board, Direction **links, int w, int h, int *pX, int *pY, Direction direction) {
+    int pCopyX = *pX;
+    int pCopyY = *pY;
+
+    if (!moveIfLegit(board, w, h, &pCopyX, &pCopyY, direction)) {
+        return false;
+    }
+
+    int nextX = estimateNextX(*pX, direction);
+    int nextY = estimateNextY(*pY, direction);
+
+    if (board[*pX][*pY] == board[nextX][nextY]) {
+        if (links[nextX][nextY] == opposite(direction)) {
+            links[*pX][*pY] = Direction::none;
+            links[nextX][nextY] = Direction::none;
+        } else {
+            links[*pX][*pY] = direction;
+        }
+        *pX = nextX;
+        *pY = nextY;
+        return true;
+    } else {
+        return false;
+    }
 }
 
 #endif //TWO_PIXELS_H
