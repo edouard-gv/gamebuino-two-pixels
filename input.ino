@@ -44,7 +44,8 @@ void input() {
         if (!ignoreRelease) {
             deleteBoard(board, W);
             deleteLinks(links, W);
-            board = createBoardAtLevel(&W, &H, level++);
+            level = nextLevel(level);
+            board = createBoardAtLevel(&W, &H, level);
             links = createEmptyLinks(W, H);
         } else {
             ignoreRelease = false;

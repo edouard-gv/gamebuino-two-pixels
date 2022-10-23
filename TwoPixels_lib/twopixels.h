@@ -48,6 +48,10 @@ Color **createAlphaBoard(int w, int h) {
     return newBoard;
 }
 
+int countLevels() {
+    return 3;
+}
+
 Color **createBoardAtLevel(int *pW, int *pH, int level) {
     if (level == 1) {
         *pW = 2;
@@ -73,6 +77,10 @@ Color **createBoardAtLevel(int *pW, int *pH, int level) {
     }
 
     return nullptr;
+}
+
+int nextLevel(int level) {
+    return (level % countLevels())+1;
 }
 
 Direction **createEmptyLinks(int w, int h) {

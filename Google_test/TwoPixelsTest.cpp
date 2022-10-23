@@ -18,14 +18,6 @@ std::string print_color(Color color) {
     }
 }
 
-Color **createEmptyBoard(int W, int H) {
-    auto **newBoard = new Color *[W];
-    for (int x = 0; x < W; ++x) {
-        newBoard[x] = new Color[H];
-    }
-    return newBoard;
-}
-
 std::string scoord(int x, int y) { return std::to_string(x) + "," + std::to_string(y) + ": "; }
 
 void assertExpectedBoard(Color **expected, Color **board, int W, int H) {
@@ -56,6 +48,12 @@ TEST(TwoPixelsTestSuite, InitializeFirstLevel) {
 
     deleteBoard(board, W);
     deleteBoard(expected, W);
+}
+
+TEST(TwoPixelsTestSuite, nextLevel) {
+    EXPECT_EQ(2, nextLevel(1));
+    EXPECT_EQ(countLevels(), nextLevel(countLevels()-1));
+    EXPECT_EQ(1, nextLevel(countLevels()));
 }
 
 TEST(TwoPixelsTestSuite, moveOKs) {
@@ -261,7 +259,6 @@ TEST(TwoPixelsTestSuite, linksRewind) {
     deleteBoard(board, W);
     deleteLinks(links, W);
 }
-
 
 TEST(TwoPixelsTestSuite, sandbox) {
     EXPECT_EQ(-1 % 4, -1);
