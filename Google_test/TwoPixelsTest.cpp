@@ -411,8 +411,8 @@ TEST(TwoPixelsTestSuite_consume, OK) {
 
     consumeLinks(board, links, W, H);
 
-    EXPECT_EQ(OMEGA, board[0][0]);
-    EXPECT_EQ(OMEGA, board[1][0]);
+    //EXPECT_EQ(OMEGA, board[0][0]); Random now :(
+    //EXPECT_EQ(OMEGA, board[1][0]); Random now :(
     EXPECT_EQ(ALPHA, board[0][1]);
     EXPECT_EQ(BETA, board[1][1]);
     EXPECT_EQ(GAMMA, board[0][2]);
@@ -440,7 +440,7 @@ TEST(TwoPixelsTestSuite_shiftDown, oneFloor) {
 
     shiftDown(board, 1, 1);
 
-    EXPECT_EQ(OMEGA, board[1][0]);
+    //EXPECT_EQ(OMEGA, board[1][0]); Random now :(
     EXPECT_EQ(BETA, board[1][1]);
 }
 
@@ -454,7 +454,7 @@ TEST(TwoPixelsTestSuite_shiftDown, twoFloors) {
 
     shiftDown(board, 1, 2);
 
-    EXPECT_EQ(OMEGA, board[1][0]);
+    //EXPECT_EQ(OMEGA, board[1][0]); Random now :(
     EXPECT_EQ(BETA, board[1][1]);
     EXPECT_EQ(DELTA, board[1][2]);
 }

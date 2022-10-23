@@ -41,6 +41,23 @@ enum Direction {
     left_lock, right_lock, up_lock, down_lock
 };
 
+Color randomColor() {
+
+    switch (rand() % 5) {
+        case 0:
+            return ALPHA;
+        case 1:
+            return BETA;
+        case 2:
+            return GAMMA;
+        case 3:
+            return DELTA;
+        case 4:
+            return OMEGA;
+    }
+    return OMEGA;
+}
+
 
 Color **createAlphaBoard(int w, int h) {
     auto **newBoard = new Color *[w];
@@ -54,7 +71,7 @@ Color **createAlphaBoard(int w, int h) {
 }
 
 int countLevels() {
-    return 4;
+    return 5;
 }
 
 Color **createBoardAtLevel(int *pW, int *pH, int level) {
@@ -90,6 +107,20 @@ Color **createBoardAtLevel(int *pW, int *pH, int level) {
         newBoard[1][0] = BETA;
         newBoard[0][1] = GAMMA;
         newBoard[1][1] = DELTA;
+        return newBoard;
+    }
+
+    if (level == 5) {
+        *pW = 8;
+        *pH = 6;
+
+        auto **newBoard = new Color *[*pW];
+        for (int x = 0; x < *pW; ++x) {
+            newBoard[x] = new Color[*pH];
+            for (int y = 0; y < *pH; ++y) {
+                newBoard[x][y] = randomColor();
+            }
+        }
         return newBoard;
     }
 
@@ -289,7 +320,7 @@ void shiftDown(Color **board, int x, int y) {
     for (int j = y; j > 0; j--) {
         board[x][j] = board[x][j - 1];
     }
-    board[x][0] = OMEGA;
+    board[x][0] = randomColor();
 }
 
 void consumeLinks(Color **board, Direction **links, int W, int H) {
@@ -300,7 +331,5 @@ void consumeLinks(Color **board, Direction **links, int W, int H) {
             }
         };
 }
-
-
 
 #endif //TWO_PIXELS_H
