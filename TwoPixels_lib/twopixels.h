@@ -24,6 +24,10 @@ enum class Color : uint16_t {
     blue = 0x4439,
     lightblue = 0x7DDF,
 };
+
+#define min(a, b) ((a)<(b)?(a):(b))
+#define max(a, b) ((a)>(b)?(a):(b))
+
 #endif //_GAMEBUINO_META_GRAPHICS_H_
 
 const Color ALPHA = Color::yellow;
@@ -33,7 +37,7 @@ const Color DELTA = Color::purple;
 const Color OMEGA = Color::green;
 
 enum Direction {
-    left_dir, right_dir, up_dir, down_dir, none,
+    left_dir, right_dir, up_dir, down_dir, none, end,
     left_lock, right_lock, up_lock, down_lock
 };
 
@@ -50,7 +54,7 @@ Color **createAlphaBoard(int w, int h) {
 }
 
 int countLevels() {
-    return 3;
+    return 4;
 }
 
 Color **createBoardAtLevel(int *pW, int *pH, int level) {
@@ -74,6 +78,18 @@ Color **createBoardAtLevel(int *pW, int *pH, int level) {
 
         Color **newBoard = createAlphaBoard(*pW, *pH);
         newBoard[1][1] = BETA;
+        return newBoard;
+    }
+
+    if (level == 4) {
+        *pW = 2;
+        *pH = 3;
+
+        Color **newBoard = createAlphaBoard(*pW, *pH);
+        newBoard[0][0] = ALPHA;
+        newBoard[1][0] = BETA;
+        newBoard[0][1] = GAMMA;
+        newBoard[1][1] = DELTA;
         return newBoard;
     }
 
@@ -211,6 +227,21 @@ bool isLocked(Direction direction) {
             direction == Direction::right_lock);
 }
 
+bool isAlone(Direction **links, int w, int h, int x, int y) {
+    int minX = max(0, x - 1);
+    int maxX = min(w - 1, x + 1);
+    int minY = max(0, y - 1);
+    int maxY = min(h - 1, y + 1);
+    for (int i = minX; i <= maxX; ++i) {
+        for (int j = minY; j <= maxY; ++j) {
+            if (!(i == x && j == y) && (links[i][j] != Direction::none)) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
 bool linkAndMoveIfLegit(Color **board, Direction **links, int w, int h, int *pX, int *pY, Direction direction) {
     if (!isMoveLegit(w, h, *pX, *pY, direction)) {
         return false;
@@ -223,11 +254,17 @@ bool linkAndMoveIfLegit(Color **board, Direction **links, int w, int h, int *pX,
         if (board[*pX][*pY] == board[nextX][nextY]) {
             if (links[nextX][nextY] == opposite(direction)) { //rewind
                 links[*pX][*pY] = Direction::none;
-                links[nextX][nextY] = Direction::none;
+                if (!isAlone(links, w, h, nextX, nextY)) {
+                    links[nextX][nextY] = Direction::end;
+                } else {
+                    links[nextX][nextY] = Direction::none;
+                }
             } else {
                 links[*pX][*pY] = direction;
-                if (links[nextX][nextY] != none) {
+                if (links[nextX][nextY] != Direction::none) {
                     lockLinksAt(links, nextX, nextY);
+                } else {
+                    links[nextX][nextY] = Direction::end;
                 }
             }
             *pX = nextX;
@@ -247,5 +284,23 @@ bool linkAndMoveIfLegit(Color **board, Direction **links, int w, int h, int *pX,
     }
     return false;
 }
+
+void shiftDown(Color **board, int x, int y) {
+    for (int j = y; j > 0; j--) {
+        board[x][j] = board[x][j - 1];
+    }
+    board[x][0] = OMEGA;
+}
+
+void consumeLinks(Color **board, Direction **links, int W, int H) {
+    for (int x = 0; x < W; x++)
+        for (int y = 0; y < H; y++) {
+            if (links[x][y] != Direction::none) {
+                shiftDown(board, x, y);
+            }
+        };
+}
+
+
 
 #endif //TWO_PIXELS_H

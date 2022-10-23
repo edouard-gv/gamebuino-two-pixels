@@ -1,4 +1,15 @@
+void resetLevel() {
+  deleteBoard(board, W);
+  deleteLinks(links, W);
+  board = createBoardAtLevel(&W, &H, level);
+  links = createEmptyLinks(W, H);
+  cursor_x = 0;
+  cursor_y = 0;
+}
+
 void input() {
+
+  int i = random(1,14);
 
     if (gb.buttons.held(BUTTON_A, 0)) {
       isLinking = true;
@@ -6,6 +17,7 @@ void input() {
 
     if (gb.buttons.released(BUTTON_A)) {
       isLinking = false;
+      consumeLinks(board, links, W, H);
       resetLinks(links, W, H);
     }
 
@@ -42,11 +54,8 @@ void input() {
 
     if (gb.buttons.released(BUTTON_B)) {
         if (!ignoreRelease) {
-            deleteBoard(board, W);
-            deleteLinks(links, W);
             level = nextLevel(level);
-            board = createBoardAtLevel(&W, &H, level);
-            links = createEmptyLinks(W, H);
+            resetLevel();
         } else {
             ignoreRelease = false;
         }
@@ -54,11 +63,7 @@ void input() {
 
     if (gb.buttons.held(BUTTON_B, 25)) {
         ignoreRelease = true;
-        level = 1;
-        deleteBoard(board, W);
-        deleteLinks(links, W);
-        board = createBoardAtLevel(&W, &H, level);
-        links = createEmptyLinks(W, H);
+        resetLevel();
     }
 }
 
