@@ -138,7 +138,7 @@ int estimateNextY(int y, Direction direction) {
     }
 }
 
-bool isMoveLegit(int w, int h, Direction direction, int x, int y) {
+bool isMoveLegit(int w, int h, int x, int y, Direction direction) {
     return ((direction == left_dir) && (x > 0)) ||
            ((direction == right_dir) && (x < w - 1)) ||
            ((direction == up_dir) && (y > 0)) ||
@@ -149,7 +149,7 @@ bool moveIfLegit(Color **board, int w, int h, int *pX, int *pY, Direction direct
     int nextX = estimateNextX(*pX, direction);
     int nextY = estimateNextY(*pY, direction);
 
-    if (isMoveLegit(w, h, direction, *pX, *pY)) {
+    if (isMoveLegit(w, h, *pX, *pY, direction)) {
         *pX = nextX;
         *pY = nextY;
         return true;
@@ -173,10 +173,7 @@ Direction opposite(Direction direction) {
 }
 
 bool linkAndMoveIfLegit(Color **board, Direction **links, int w, int h, int *pX, int *pY, Direction direction) {
-    int pCopyX = *pX;
-    int pCopyY = *pY;
-
-    if (!moveIfLegit(board, w, h, &pCopyX, &pCopyY, direction)) {
+    if (!isMoveLegit(w, h, *pX, *pY, direction)) {
         return false;
     }
 
