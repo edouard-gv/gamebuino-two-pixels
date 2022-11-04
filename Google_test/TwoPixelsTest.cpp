@@ -64,16 +64,16 @@ TEST(TwoPixelsTestSuite_move, OKs) {
 
     int x = 1;
     int y = 0;
-    EXPECT_TRUE(moveIfLegit(board, W, H, &x, &y, Direction::left_dir));
+    EXPECT_TRUE(moveIfLegit(board, W, H, &x, &y, Command::left_cmd));
     EXPECT_EQ(0, x);
     EXPECT_EQ(0, y);
-    EXPECT_TRUE(moveIfLegit(board, W, H, &x, &y, Direction::down_dir));
+    EXPECT_TRUE(moveIfLegit(board, W, H, &x, &y, Command::down_cmd));
     EXPECT_EQ(0, x);
     EXPECT_EQ(1, y);
-    EXPECT_TRUE(moveIfLegit(board, W, H, &x, &y, Direction::right_dir));
+    EXPECT_TRUE(moveIfLegit(board, W, H, &x, &y, Command::right_cmd));
     EXPECT_EQ(1, x);
     EXPECT_EQ(1, y);
-    EXPECT_TRUE(moveIfLegit(board, W, H, &x, &y, Direction::up_dir));
+    EXPECT_TRUE(moveIfLegit(board, W, H, &x, &y, Command::up_cmd));
     EXPECT_EQ(1, x);
     EXPECT_EQ(0, y);
 
@@ -88,19 +88,19 @@ TEST(TwoPixelsTestSuite_move, KOs) {
 
     int x = 1;
     int y = 0;
-    EXPECT_FALSE(moveIfLegit(board, W, H, &x, &y, Direction::right_dir));
+    EXPECT_FALSE(moveIfLegit(board, W, H, &x, &y, Command::right_cmd));
     EXPECT_EQ(1, x);
     EXPECT_EQ(0, y);
-    EXPECT_FALSE(moveIfLegit(board, W, H, &x, &y, Direction::up_dir));
+    EXPECT_FALSE(moveIfLegit(board, W, H, &x, &y, Command::up_cmd));
     EXPECT_EQ(1, x);
     EXPECT_EQ(0, y);
 
     x = 0;
     y = 2;
-    EXPECT_FALSE(moveIfLegit(board, W, H, &x, &y, Direction::left_dir));
+    EXPECT_FALSE(moveIfLegit(board, W, H, &x, &y, Command::left_cmd));
     EXPECT_EQ(0, x);
     EXPECT_EQ(2, y);
-    EXPECT_FALSE(moveIfLegit(board, W, H, &x, &y, Direction::down_dir));
+    EXPECT_FALSE(moveIfLegit(board, W, H, &x, &y, Command::down_cmd));
     EXPECT_EQ(0, x);
     EXPECT_EQ(2, y);
 
@@ -117,7 +117,7 @@ TEST(TwoPixelsTestSuite_links, Unitary) {
     int x = 1;
     int y = 1;
     EXPECT_EQ(Direction::none, links[1][1]);
-    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::right_dir));
+    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Command::right_cmd));
     EXPECT_EQ(Direction::right_dir, links[1][1]);
     EXPECT_EQ(2, x);
     EXPECT_EQ(1, y);
@@ -138,31 +138,31 @@ TEST(TwoPixelsTestSuite_links, Walk) {
     int x = 1;
     int y = 1;
     EXPECT_EQ(Direction::none, links[1][1]);
-    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::right_dir));
+    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Command::right_cmd));
     EXPECT_EQ(Direction::right_dir, links[1][1]);
     EXPECT_EQ(2, x);
     EXPECT_EQ(1, y);
     EXPECT_EQ(Direction::end, links[2][1]);
 
-    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::up_dir));
+    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Command::up_cmd));
     EXPECT_EQ(Direction::up_dir, links[2][1]);
     EXPECT_EQ(2, x);
     EXPECT_EQ(0, y);
     EXPECT_EQ(Direction::end, links[2][0]);
 
-    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::left_dir));
+    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Command::left_cmd));
     EXPECT_EQ(Direction::left_dir, links[2][0]);
     EXPECT_EQ(1, x);
     EXPECT_EQ(0, y);
     EXPECT_EQ(Direction::end, links[1][0]);
 
-    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::left_dir));
+    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Command::left_cmd));
     EXPECT_EQ(Direction::left_dir, links[1][0]);
     EXPECT_EQ(0, x);
     EXPECT_EQ(0, y);
     EXPECT_EQ(Direction::end, links[0][0]);
 
-    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::down_dir));
+    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Command::down_cmd));
     EXPECT_EQ(Direction::down_dir, links[0][0]);
     EXPECT_EQ(0, x);
     EXPECT_EQ(1, y);
@@ -181,19 +181,19 @@ TEST(TwoPixelsTestSuite_links, KOForColor) {
 
     int x = 1;
     int y = 1;
-    EXPECT_FALSE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::right_dir));
+    EXPECT_FALSE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Command::right_cmd));
     EXPECT_EQ(Direction::none, links[1][1]);
     EXPECT_EQ(1, x);
     EXPECT_EQ(1, y);
-    EXPECT_FALSE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::up_dir));
+    EXPECT_FALSE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Command::up_cmd));
     EXPECT_EQ(Direction::none, links[1][1]);
     EXPECT_EQ(1, x);
     EXPECT_EQ(1, y);
-    EXPECT_FALSE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::left_dir));
+    EXPECT_FALSE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Command::left_cmd));
     EXPECT_EQ(Direction::none, links[1][1]);
     EXPECT_EQ(1, x);
     EXPECT_EQ(1, y);
-    EXPECT_FALSE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::down_dir));
+    EXPECT_FALSE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Command::down_cmd));
     EXPECT_EQ(Direction::none, links[1][1]);
     EXPECT_EQ(1, x);
     EXPECT_EQ(1, y);
@@ -211,7 +211,7 @@ TEST(TwoPixelsTestSuite_links, KOForBorders) {
     Direction **links = createEmptyLinks(W, H);
     int x = 0;
     int y = 0;
-    EXPECT_FALSE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::left_dir));
+    EXPECT_FALSE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Command::left_cmd));
     EXPECT_EQ(Direction::none, links[0][0]);
 
     deleteBoard(board, W);
@@ -239,7 +239,7 @@ TEST(TwoPixelsTestSuite_links, RewindToPrevious) {
     links[2][1] = Direction::end;
     int x = 2;
     int y = 1;
-    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::left_dir));
+    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Command::left_cmd));
     EXPECT_EQ(1, x);
     EXPECT_EQ(1, y);
     EXPECT_EQ(Direction::none, links[2][1]);
@@ -282,7 +282,7 @@ TEST(TwoPixelsTestSuite_links, RewindToNone) {
     links[2][1] = Direction::end;
     int x = 2;
     int y = 1;
-    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::left_dir));
+    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Command::left_cmd));
     EXPECT_EQ(1, x);
     EXPECT_EQ(1, y);
     EXPECT_EQ(Direction::none, links[2][1]);
@@ -292,7 +292,7 @@ TEST(TwoPixelsTestSuite_links, RewindToNone) {
     links[0][1] = Direction::end;
     x = 0;
     y = 1;
-    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::right_dir));
+    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Command::right_cmd));
     EXPECT_EQ(1, x);
     EXPECT_EQ(1, y);
     EXPECT_EQ(Direction::none, links[0][1]);
@@ -302,7 +302,7 @@ TEST(TwoPixelsTestSuite_links, RewindToNone) {
     links[1][0] = Direction::end;
     x = 1;
     y = 0;
-    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::down_dir));
+    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Command::down_cmd));
     EXPECT_EQ(1, x);
     EXPECT_EQ(1, y);
     EXPECT_EQ(Direction::none, links[1][0]);
@@ -312,7 +312,7 @@ TEST(TwoPixelsTestSuite_links, RewindToNone) {
     links[1][2] = Direction::end;
     x = 1;
     y = 2;
-    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::up_dir));
+    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Command::up_cmd));
     EXPECT_EQ(1, x);
     EXPECT_EQ(1, y);
     EXPECT_EQ(Direction::none, links[1][0]);
@@ -335,20 +335,20 @@ TEST(TwoPixelsTestSuite_cycle, square) {
     int x = 1;
     int y = 1;
 
-    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::right_dir));
-    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::down_dir));
-    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::left_dir));
+    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Command::right_cmd));
+    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Command::down_cmd));
+    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Command::left_cmd));
     EXPECT_EQ(1, x);
     EXPECT_EQ(2, y);
 
-    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::up_dir));
+    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Command::up_cmd));
 
 
-    EXPECT_FALSE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::up_dir));
-    EXPECT_FALSE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::left_dir));
-    EXPECT_FALSE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::right_dir));
+    EXPECT_FALSE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Command::up_cmd));
+    EXPECT_FALSE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Command::left_cmd));
+    EXPECT_FALSE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Command::right_cmd));
 
-    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::down_dir));
+    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Command::down_cmd));
     EXPECT_EQ(Direction::right_dir, links[1][1]);
     EXPECT_EQ(Direction::none, links[1][2]);
 
@@ -364,20 +364,20 @@ TEST(TwoPixelsTestSuite_cycle, should_not_be_able_to_come_back) {
     int x = 0;
     int y = 1;
 
-    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::right_dir));
-    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::right_dir));
-    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::down_dir));
-    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::left_dir));
+    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Command::right_cmd));
+    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Command::right_cmd));
+    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Command::down_cmd));
+    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Command::left_cmd));
     EXPECT_EQ(1, x);
     EXPECT_EQ(2, y);
 
-    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::up_dir));
+    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Command::up_cmd));
 
-    EXPECT_FALSE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::up_dir));
-    EXPECT_FALSE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::left_dir));
-    EXPECT_FALSE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::right_dir));
+    EXPECT_FALSE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Command::up_cmd));
+    EXPECT_FALSE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Command::left_cmd));
+    EXPECT_FALSE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Command::right_cmd));
 
-    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::down_dir));
+    EXPECT_TRUE(linkAndMoveIfLegit(board, links, W, H, &x, &y, Command::down_cmd));
     EXPECT_EQ(Direction::right_dir, links[1][1]);
     EXPECT_EQ(Direction::none, links[1][2]);
 
@@ -442,7 +442,7 @@ TEST(TwoPixelsTestSuite_consume, OK) {
 
     int x = 0;
     int y = 2;
-    linkAndMoveIfLegit(board, links, W, H, &x, &y, Direction::right_dir);
+    linkAndMoveIfLegit(board, links, W, H, &x, &y, Command::right_cmd);
 
     consumeLinks(board, links, W, H);
 
@@ -492,6 +492,21 @@ TEST(TwoPixelsTestSuite_shiftDown, twoFloors) {
     //EXPECT_EQ(OMEGA, board[1][0]); Random now :(
     EXPECT_EQ(BETA, board[1][1]);
     EXPECT_EQ(DELTA, board[1][2]);
+}
+
+TEST(TwoPixelsTestSuite, map) {
+    EXPECT_EQ(map(Direction::right_dir), Command::right_cmd);
+    EXPECT_EQ(map(Direction::left_dir), Command::left_cmd);
+    EXPECT_EQ(map(Direction::up_dir), Command::up_cmd);
+    EXPECT_EQ(map(Direction::down_dir), Command::down_cmd);
+    EXPECT_EQ(map(Direction::right_lock), Command::right_cmd);
+    EXPECT_EQ(map(Direction::left_lock), Command::left_cmd);
+    EXPECT_EQ(map(Direction::up_lock), Command::up_cmd);
+    EXPECT_EQ(map(Direction::down_lock), Command::down_cmd);
+    EXPECT_EQ(map(Command::right_cmd), Direction::right_dir);
+    EXPECT_EQ(map(Command::left_cmd), Direction::left_dir);
+    EXPECT_EQ(map(Command::up_cmd), Direction::up_dir);
+    EXPECT_EQ(map(Command::down_cmd), Direction::down_dir);
 }
 
 TEST(TwoPixelsTestSuite, sandbox) {

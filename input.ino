@@ -23,31 +23,31 @@ void input() {
 
     if (!isLinking) {
       if (gb.buttons.pressed(BUTTON_UP)) {
-          moveIfLegit(board, W, H, &cursor_x, &cursor_y, Direction::up_dir);
+          moveIfLegit(board, W, H, &cursor_x, &cursor_y, Command::up_cmd);
       }
       if (gb.buttons.pressed(BUTTON_RIGHT)) {
-          moveIfLegit(board, W, H, &cursor_x, &cursor_y, Direction::right_dir);
+          moveIfLegit(board, W, H, &cursor_x, &cursor_y, Command::right_cmd);
       }
       if (gb.buttons.pressed(BUTTON_DOWN)) {
-          moveIfLegit(board, W, H, &cursor_x, &cursor_y, Direction::down_dir);
+          moveIfLegit(board, W, H, &cursor_x, &cursor_y, Command::down_cmd);
       }
       if (gb.buttons.pressed(BUTTON_LEFT)) {
-          moveIfLegit(board, W, H, &cursor_x, &cursor_y, Direction::left_dir);
+          moveIfLegit(board, W, H, &cursor_x, &cursor_y, Command::left_cmd);
       }
     }
 
     if (isLinking) {
       if (gb.buttons.pressed(BUTTON_UP)) {
-          linkAndMoveIfLegit(board, links, W, H, &cursor_x, &cursor_y, Direction::up_dir);
+          linkAndMoveIfLegit(board, links, W, H, &cursor_x, &cursor_y, Command::up_cmd);
       }
       if (gb.buttons.pressed(BUTTON_RIGHT)) {
-          linkAndMoveIfLegit(board, links, W, H, &cursor_x, &cursor_y, Direction::right_dir);
+          linkAndMoveIfLegit(board, links, W, H, &cursor_x, &cursor_y, Command::right_cmd);
       }
       if (gb.buttons.pressed(BUTTON_DOWN)) {
-          linkAndMoveIfLegit(board, links, W, H, &cursor_x, &cursor_y, Direction::down_dir);
+          linkAndMoveIfLegit(board, links, W, H, &cursor_x, &cursor_y, Command::down_cmd);
       }
       if (gb.buttons.pressed(BUTTON_LEFT)) {
-          linkAndMoveIfLegit(board, links, W, H, &cursor_x, &cursor_y, Direction::left_dir);
+          linkAndMoveIfLegit(board, links, W, H, &cursor_x, &cursor_y, Command::left_cmd);
       }
     }
 

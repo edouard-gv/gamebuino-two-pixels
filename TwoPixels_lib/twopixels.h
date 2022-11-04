@@ -36,10 +36,37 @@ const Color GAMMA = Color::red;
 const Color DELTA = Color::purple;
 const Color OMEGA = Color::green;
 
+enum Command {
+    left_cmd, right_cmd, up_cmd, down_cmd
+};
+
 enum Direction {
     left_dir, right_dir, up_dir, down_dir, none, end,
     left_lock, right_lock, up_lock, down_lock
 };
+
+Direction map(Command command) {
+    switch (command) {
+        case Command::left_cmd: return Direction::left_dir;
+        case Command::right_cmd: return Direction::right_dir;
+        case Command::up_cmd: return Direction::up_dir;
+        case Command::down_cmd: return Direction::down_dir;
+        default: return Direction::none;
+    }
+}
+
+Command map(Direction direction) {
+    switch (direction) {
+        case Direction::left_dir: return Command::left_cmd;
+        case Direction::right_dir: return Command::right_cmd;
+        case Direction::up_dir: return Command::up_cmd;
+        case Direction::left_lock: return Command::left_cmd;
+        case Direction::right_lock: return Command::right_cmd;
+        case Direction::up_lock: return Command::up_cmd;
+        default: return Command::down_cmd;
+    }
+}
+
 
 Color randomColor() {
 
@@ -164,40 +191,40 @@ void deleteLinks(Direction **links, int W) {
     delete links;
 }
 
-int estimateNextX(int x, Direction direction) {
-    switch (direction) {
-        case Direction::left_dir:
+int estimateNextX(int x, Command command) {
+    switch (command) {
+        case Command::left_cmd:
             return x - 1;
-        case Direction::right_dir:
+        case Command::right_cmd:
             return x + 1;
         default:
             return x;
     }
 }
 
-int estimateNextY(int y, Direction direction) {
-    switch (direction) {
-        case Direction::up_dir:
+int estimateNextY(int y, Command command) {
+    switch (command) {
+        case Command::up_cmd:
             return y - 1;
-        case Direction::down_dir:
+        case Command::down_cmd:
             return y + 1;
         default:
             return y;
     }
 }
 
-bool isMoveLegit(int w, int h, int x, int y, Direction direction) {
-    return ((direction == left_dir) && (x > 0)) ||
-           ((direction == right_dir) && (x < w - 1)) ||
-           ((direction == up_dir) && (y > 0)) ||
-           ((direction == down_dir) && (y < h - 1));
+bool isMoveLegit(int w, int h, int x, int y, Command command) {
+    return ((command == left_cmd) && (x > 0)) ||
+           ((command == right_cmd) && (x < w - 1)) ||
+           ((command == up_cmd) && (y > 0)) ||
+           ((command == down_cmd) && (y < h - 1));
 }
 
-bool moveIfLegit(Color **board, int w, int h, int *pX, int *pY, Direction direction) {
-    int nextX = estimateNextX(*pX, direction);
-    int nextY = estimateNextY(*pY, direction);
+bool moveIfLegit(Color **board, int w, int h, int *pX, int *pY, Command command) {
+    int nextX = estimateNextX(*pX, command);
+    int nextY = estimateNextY(*pY, command);
 
-    if (isMoveLegit(w, h, *pX, *pY, direction)) {
+    if (isMoveLegit(w, h, *pX, *pY, command)) {
         *pX = nextX;
         *pY = nextY;
         return true;
@@ -205,18 +232,16 @@ bool moveIfLegit(Color **board, int w, int h, int *pX, int *pY, Direction direct
     return false;
 }
 
-Direction opposite(Direction direction) {
-    switch (direction) {
-        case Direction::left_dir:
-            return Direction::right_dir;
-        case Direction::right_dir:
-            return Direction::left_dir;
-        case Direction::up_dir:
-            return Direction::down_dir;
-        case Direction::down_dir:
-            return Direction::up_dir;
-        default:
-            return direction;
+Command opposite(Command command) {
+    switch (command) {
+        case Command::left_cmd:
+            return Command::right_cmd;
+        case Command::right_cmd:
+            return Command::left_cmd;
+        case Command::up_cmd:
+            return Command::down_cmd;
+        case Command::down_cmd:
+            return Command::up_cmd;
     }
 }
 
@@ -273,17 +298,17 @@ bool isAlone(Direction **links, int w, int h, int x, int y) {
     return true;
 }
 
-bool linkAndMoveIfLegit(Color **board, Direction **links, int w, int h, int *pX, int *pY, Direction direction) {
-    if (!isMoveLegit(w, h, *pX, *pY, direction)) {
+bool linkAndMoveIfLegit(Color **board, Direction **links, int w, int h, int *pX, int *pY, Command command) {
+    if (!isMoveLegit(w, h, *pX, *pY, command)) {
         return false;
     }
 
-    int nextX = estimateNextX(*pX, direction);
-    int nextY = estimateNextY(*pY, direction);
+    int nextX = estimateNextX(*pX, command);
+    int nextY = estimateNextY(*pY, command);
 
     if (!isLocked(links[*pX][*pY])) {
         if (board[*pX][*pY] == board[nextX][nextY]) {
-            if (links[nextX][nextY] == opposite(direction)) { //rewind
+            if (links[nextX][nextY] == map(opposite(command))) { //rewind
                 links[*pX][*pY] = Direction::none;
                 if (!isAlone(links, w, h, nextX, nextY)) {
                     links[nextX][nextY] = Direction::end;
@@ -291,7 +316,7 @@ bool linkAndMoveIfLegit(Color **board, Direction **links, int w, int h, int *pX,
                     links[nextX][nextY] = Direction::none;
                 }
             } else {
-                links[*pX][*pY] = direction;
+                links[*pX][*pY] = map(command);
                 if (links[nextX][nextY] != Direction::none) {
                     lockLinksAt(links, nextX, nextY);
                     lockLinksAt(links, *pX, *pY);
@@ -307,7 +332,7 @@ bool linkAndMoveIfLegit(Color **board, Direction **links, int w, int h, int *pX,
         }
     }
     //we are locked
-    if (links[nextX][nextY] == toggleLock(opposite(direction))) {
+    if (links[nextX][nextY] == toggleLock(map(opposite(command)))) {
         unlockLinksAt(links, *pX, *pY);
         links[nextX][nextY] = Direction::none;
         *pX = nextX;
