@@ -294,6 +294,7 @@ bool linkAndMoveIfLegit(Color **board, Direction **links, int w, int h, int *pX,
                 links[*pX][*pY] = direction;
                 if (links[nextX][nextY] != Direction::none) {
                     lockLinksAt(links, nextX, nextY);
+                    lockLinksAt(links, *pX, *pY);
                 } else {
                     links[nextX][nextY] = Direction::end;
                 }
@@ -306,7 +307,7 @@ bool linkAndMoveIfLegit(Color **board, Direction **links, int w, int h, int *pX,
         }
     }
     //we are locked
-    if (links[nextX][nextY] == opposite(direction)) {
+    if (links[nextX][nextY] == toggleLock(opposite(direction))) {
         unlockLinksAt(links, *pX, *pY);
         links[nextX][nextY] = Direction::none;
         *pX = nextX;
