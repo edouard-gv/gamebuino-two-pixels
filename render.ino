@@ -1,21 +1,26 @@
 int NB_DRIFT_STEPS = 5;
+int DOT_DISTANCE = 10;
+int HALF_DOT_DISTANCE = 5; // DOT_DISTANCE / 2
+int DRIFT_DISTANCE = 2; // DOT_DISTANCE / NB_DRIFT_STEPS
 
 void render() {
   gb.display.clear();
   for (int x = 0; x < W; x++) {
     for (int y = 0; y < H; y++) {
+      int center_x = DOT_DISTANCE*x+HALF_DOT_DISTANCE;
+      int center_y = DOT_DISTANCE*y+HALF_DOT_DISTANCE;
       gb.display.setColor(board[x][y]);
       int shifts = countPositionsIShouldShiftDown(links, W, H, x, y);
       if (isDrifting && shifts > 0) {
-        gb.display.drawCircle(10*x+5, 10*y+5-10*shifts+2*driftStep*shifts, 4);
+        gb.display.drawCircle(center_x, center_y-shifts*DOT_DISTANCE+shifts*driftStep*DRIFT_DISTANCE, 4);
       }
       else {
-        gb.display.drawCircle(10*x+5, 10*y+5, 4);
+        gb.display.drawCircle(center_x, center_y, 4);
         if (x == cursor_x && y == cursor_y) {
-          gb.display.drawCircle(10*x+5, 10*y+5, 2);
+          gb.display.drawCircle(center_x, center_y, 2);
         }
         if (links[x][y] != Direction::none) {
-          gb.display.drawCircle(10*x+5, 10*y+5, 1);
+          gb.display.drawCircle(center_x, center_y, 1);
         }
       }
     }
