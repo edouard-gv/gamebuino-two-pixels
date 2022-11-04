@@ -5,8 +5,9 @@ void render() {
   for (int x = 0; x < W; x++) {
     for (int y = 0; y < H; y++) {
       gb.display.setColor(board[x][y]);
-      if (isDrifting && links[x][y] != Direction::none) {
-        gb.display.drawCircle(10*x+5, 10*y-5+2*driftStep, 4);
+      int shifts = countPositionsIShouldShiftDown(links, W, H, x, y);
+      if (isDrifting && shifts > 0) {
+        gb.display.drawCircle(10*x+5, 10*y+5-10*shifts+2*driftStep*shifts, 4);
       }
       else {
         gb.display.drawCircle(10*x+5, 10*y+5, 4);

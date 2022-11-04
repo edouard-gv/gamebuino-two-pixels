@@ -240,7 +240,7 @@ Command opposite(Command command) {
             return Command::left_cmd;
         case Command::up_cmd:
             return Command::down_cmd;
-        case Command::down_cmd:
+        default: //case Command::down_cmd:
             return Command::up_cmd;
     }
 }
@@ -359,6 +359,20 @@ bool consumeLinks(Color **board, Direction **links, int W, int H) {
             }
         };
     return something_happened;
+}
+
+int countPositionsIShouldShiftDown(Direction **links, int W, int H, int x, int y) {
+    int nbHolesInColumn = 0;
+    bool hasHolesBelowMe = false;
+    for (int j = 0; j < H; ++j) {
+        if (links[x][j] != Direction::none) {
+            nbHolesInColumn++;
+            if (j >= y) {
+                hasHolesBelowMe = true;
+            }
+        }
+    }
+    return (hasHolesBelowMe ? nbHolesInColumn : 0);
 }
 
 #endif //TWO_PIXELS_H

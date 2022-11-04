@@ -511,6 +511,32 @@ TEST(TwoPixelsTestSuite, map) {
     EXPECT_EQ(map(Command::down_cmd), Direction::down_dir);
 }
 
+TEST(TwoPixelsTestSuite, countPositionsIShouldShiftDown) {
+    Direction **links = createEmptyLinks(5, 3);
+    /*
+     *  |  t | xt |  t | xt |  t |
+     *  |    |  t | xt | xt | x  |
+     *  |    |    |    |    | xt |
+     */
+    links[1][0] = Direction::up_dir;
+    links[2][1] = Direction::up_dir;
+    links[3][0] = Direction::up_dir;
+    links[3][1] = Direction::up_dir;
+    links[4][1] = Direction::up_dir;
+    links[4][2] = Direction::up_dir;
+
+    EXPECT_EQ(0, countPositionsIShouldShiftDown(links, 3, 3, 0, 0));
+    EXPECT_EQ(1, countPositionsIShouldShiftDown(links, 3, 3, 1, 0));
+    EXPECT_EQ(0, countPositionsIShouldShiftDown(links, 3, 3, 1, 1));
+    EXPECT_EQ(1, countPositionsIShouldShiftDown(links, 3, 3, 2, 0));
+    EXPECT_EQ(1, countPositionsIShouldShiftDown(links, 3, 3, 2, 1));
+    EXPECT_EQ(2, countPositionsIShouldShiftDown(links, 3, 3, 3, 0));
+    EXPECT_EQ(2, countPositionsIShouldShiftDown(links, 3, 3, 3, 1));
+    EXPECT_EQ(2, countPositionsIShouldShiftDown(links, 3, 3, 4, 0));
+    EXPECT_EQ(2, countPositionsIShouldShiftDown(links, 3, 3, 4, 2));
+
+}
+
 TEST(TwoPixelsTestSuite, sandbox) {
     EXPECT_EQ(-1 % 4, -1);
 }
