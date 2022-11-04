@@ -12,15 +12,15 @@ void render() {
       gb.display.setColor(board[x][y]);
       int shifts = countPositionsIShouldShiftDown(links, W, H, x, y);
       if (isDrifting && shifts > 0) {
-        gb.display.drawCircle(center_x, center_y-shifts*DOT_DISTANCE+shifts*driftStep*DRIFT_DISTANCE, 4);
+        gb.display.drawCircle(center_x, center_y-shifts*DOT_DISTANCE+shifts*driftStep*DRIFT_DISTANCE, HALF_DOT_DISTANCE-1);
       }
       else {
-        gb.display.drawCircle(center_x, center_y, 4);
+        gb.display.drawCircle(center_x, center_y, HALF_DOT_DISTANCE-1);
         if (x == cursor_x && y == cursor_y) {
-          gb.display.drawCircle(center_x, center_y, 2);
+          gb.display.drawCircle(center_x, center_y, HALF_DOT_DISTANCE-3);
         }
         if (links[x][y] != Direction::none) {
-          gb.display.drawCircle(center_x, center_y, 1);
+          gb.display.drawCircle(center_x, center_y, HALF_DOT_DISTANCE-4);
         }
       }
     }
