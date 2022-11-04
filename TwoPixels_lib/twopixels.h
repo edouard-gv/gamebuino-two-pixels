@@ -349,13 +349,16 @@ void shiftDown(Color **board, int x, int y) {
     board[x][0] = randomColor();
 }
 
-void consumeLinks(Color **board, Direction **links, int W, int H) {
+bool consumeLinks(Color **board, Direction **links, int W, int H) {
+    bool something_happened = false;
     for (int x = 0; x < W; x++)
         for (int y = 0; y < H; y++) {
             if (links[x][y] != Direction::none) {
+                something_happened = true;
                 shiftDown(board, x, y);
             }
         };
+    return something_happened;
 }
 
 #endif //TWO_PIXELS_H

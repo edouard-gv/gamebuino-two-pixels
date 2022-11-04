@@ -17,8 +17,7 @@ void input() {
 
     if (gb.buttons.released(BUTTON_A)) {
       isLinking = false;
-      consumeLinks(board, links, W, H);
-      resetLinks(links, W, H);
+      isDrifting = consumeLinks(board, links, W, H);
     }
 
     if (!isLinking) {

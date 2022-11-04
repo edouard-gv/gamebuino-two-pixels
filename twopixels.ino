@@ -13,6 +13,8 @@ int cursor_x=0;
 int cursor_y=0;
 
 bool isLinking=false;
+bool isDrifting=false;
+int driftStep = 0;
 
 int level = 1;
 

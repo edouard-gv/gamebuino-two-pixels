@@ -440,11 +440,13 @@ TEST(TwoPixelsTestSuite_consume, OK) {
     Direction **links = createEmptyLinks(W, H);
 
 
+    EXPECT_FALSE(consumeLinks(board, links, W, H));
+
     int x = 0;
     int y = 2;
     linkAndMoveIfLegit(board, links, W, H, &x, &y, Command::right_cmd);
 
-    consumeLinks(board, links, W, H);
+    EXPECT_TRUE(consumeLinks(board, links, W, H));
 
     //EXPECT_EQ(OMEGA, board[0][0]); Random now :(
     //EXPECT_EQ(OMEGA, board[1][0]); Random now :(
