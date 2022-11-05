@@ -36,6 +36,10 @@ const Color GAMMA = Color::red;
 const Color DELTA = Color::purple;
 const Color OMEGA = Color::green;
 
+const Color all_colors[] = {ALPHA, BETA, GAMMA, DELTA, OMEGA};
+
+const int COLOR_COUNT = 5;
+
 enum Command {
     left_cmd, right_cmd, up_cmd, down_cmd
 };
@@ -334,6 +338,24 @@ int countPositionsIShouldShiftDown(Direction **links, int W, int H, int x, int y
         }
     }
     return (hasHolesBelowMe ? nbHolesInColumn : 0);
+}
+
+void updateScore(Color **board, int W, int H, int *score, int scale) {
+    int counts[] = {0,0,0,0,0};
+    for (int i = 0; i < W; ++i) {
+        for (int j = 0; j < H; ++j) {
+            switch (board[i][j]) {
+                case ALPHA: counts[0]++; break;
+                case BETA: counts[1]++; break;
+                case GAMMA: counts[2]++; break;
+                case DELTA: counts[3]++; break;
+                case OMEGA: counts[4]++; break;
+            }
+        }
+    }
+    for (int k = 0; k < COLOR_COUNT; ++k) {
+        score[k] = round(counts[k]/(float)(W*H)*scale);
+    }
 }
 
 #endif //TWO_PIXELS_H

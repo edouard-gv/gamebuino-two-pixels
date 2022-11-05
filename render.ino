@@ -42,6 +42,17 @@ void render() {
       driftStep = 0;
     }
   }
+
+  gb.display.setColor(DARKBLUE);
+  gb.display.drawRect(0, 0, screen_W, screen_H);
+  gb.display.drawRect(2, 2, screen_W-4, screen_H-4);
+
+  for (int k=0; k < COLOR_COUNT; ++k) {
+    int base_x;
+    int base_y;
+    gb.display.setColor(all_colors[k]);
+    gb.display.fillRect(k/3*(screen_W-3), (SCORE_SCALE+1) * (k % 3 + 1) - score[k], 3, score[k]);
+  }
 }
 
 

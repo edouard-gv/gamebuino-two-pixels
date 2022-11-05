@@ -2,8 +2,10 @@
 #include "TwoPixels_lib/twopixels.h"
 Color **board;
 Direction **links;
+int score[] = {0, 0, 0, 0, 0};
+int SCORE_SCALE = 18
+;
 
-bool red;
 bool ignoreRelease;
 
 int W=0;

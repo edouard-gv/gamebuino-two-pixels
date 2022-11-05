@@ -1,5 +1,8 @@
 #include "gtest/gtest.h"
+#include "gmock/gmock.h"
 #include "twopixels.h"
+
+using ::testing::ElementsAre;
 
 std::string print_color(Color color) {
     switch (color) {
@@ -588,6 +591,22 @@ TEST(TwoPixelsTestSuite, countPositionsIShouldShiftDown) {
     EXPECT_EQ(2, countPositionsIShouldShiftDown(links, 3, 3, 4, 0));
     EXPECT_EQ(2, countPositionsIShouldShiftDown(links, 3, 3, 4, 2));
 
+}
+
+
+TEST(TwoPixelsTestSuite, scores) {
+
+    int W = 0;
+    int H = 0;
+
+    int currentScore[] = {0, 0, 0, 0, 0};
+
+    Color **board = createTestBoard(&W, &H, 2);
+    updateScore(board, W, H,currentScore, 7);
+    ASSERT_THAT(currentScore, ElementsAre(7, 0, 0, 0, 0));
+
+    updateScore(createTestBoard(&W, &H, 3), W, H, currentScore, 10);
+    ASSERT_THAT(currentScore, ElementsAre(9, 1, 0, 0, 0));
 }
 
 TEST(TwoPixelsTestSuite, sandbox) {
