@@ -30,6 +30,59 @@ void assertExpectedBoard(Color **expected, Color **board, int W, int H) {
     }
 }
 
+Color **createTestBoard(int *pW, int *pH, int inputNumber) {
+    if (inputNumber == 1) {
+        *pW = 2;
+        *pH = 3;
+        Color **newBoard = createAlphaBoard(*pW, *pH);
+        newBoard[0][2] = BETA;
+        return newBoard;
+    }
+
+    if (inputNumber == 2) {
+        *pW = 3;
+        *pH = 3;
+        return createAlphaBoard(*pW, *pH);
+    }
+
+    if (inputNumber == 3) {
+        *pW = 3;
+        *pH = 3;
+
+        Color **newBoard = createAlphaBoard(*pW, *pH);
+        newBoard[1][1] = BETA;
+        return newBoard;
+    }
+
+    if (inputNumber == 4) {
+        *pW = 2;
+        *pH = 3;
+
+        Color **newBoard = createAlphaBoard(*pW, *pH);
+        newBoard[0][0] = ALPHA;
+        newBoard[1][0] = BETA;
+        newBoard[0][1] = GAMMA;
+        newBoard[1][1] = DELTA;
+        return newBoard;
+    }
+
+    if (inputNumber == 5) {
+        *pW = 8;
+        *pH = 6;
+
+        auto **newBoard = new Color *[*pW];
+        for (int x = 0; x < *pW; ++x) {
+            newBoard[x] = new Color[*pH];
+            for (int y = 0; y < *pH; ++y) {
+                newBoard[x][y] = randomColor();
+            }
+        }
+        return newBoard;
+    }
+
+    return nullptr;
+}
+
 TEST(TwoPixelsTestSuite_levels, Initialize) {
     int W = 0;
     int H = 0;
@@ -39,7 +92,7 @@ TEST(TwoPixelsTestSuite_levels, Initialize) {
             new Color[3]{ALPHA, ALPHA, ALPHA}
     };
 
-    Color **board = createBoardAtLevel(&W, &H, 1);
+    Color **board = createTestBoard(&W, &H, 1);
 
     EXPECT_EQ(2, W);
     EXPECT_EQ(3, H);
@@ -60,7 +113,7 @@ TEST(TwoPixelsTestSuite_move, OKs) {
     int W = 0;
     int H = 0;
 
-    Color **board = createBoardAtLevel(&W, &H, 1);
+    Color **board = createTestBoard(&W, &H, 1);
 
     int x = 1;
     int y = 0;
@@ -84,7 +137,7 @@ TEST(TwoPixelsTestSuite_move, KOs) {
     int W = 0;
     int H = 0;
 
-    Color **board = createBoardAtLevel(&W, &H, 1);
+    Color **board = createTestBoard(&W, &H, 1);
 
     int x = 1;
     int y = 0;
@@ -111,7 +164,7 @@ TEST(TwoPixelsTestSuite_links, Unitary) {
     int W = 0;
     int H = 0;
 
-    Color **board = createBoardAtLevel(&W, &H, 2);
+    Color **board = createTestBoard(&W, &H, 2);
     Direction **links = createEmptyLinks(W, H);
 
     int x = 1;
@@ -132,7 +185,7 @@ TEST(TwoPixelsTestSuite_links, Walk) {
     int W = 0;
     int H = 0;
 
-    Color **board = createBoardAtLevel(&W, &H, 2);
+    Color **board = createTestBoard(&W, &H, 2);
     Direction **links = createEmptyLinks(W, H);
 
     int x = 1;
@@ -176,7 +229,7 @@ TEST(TwoPixelsTestSuite_links, KOForColor) {
     int W = 0;
     int H = 0;
 
-    Color **board = createBoardAtLevel(&W, &H, 3);
+    Color **board = createTestBoard(&W, &H, 3);
     Direction **links = createEmptyLinks(W, H);
 
     int x = 1;
@@ -207,7 +260,7 @@ TEST(TwoPixelsTestSuite_links, KOForBorders) {
     int W = 0;
     int H = 0;
 
-    Color **board = createBoardAtLevel(&W, &H, 3);
+    Color **board = createTestBoard(&W, &H, 3);
     Direction **links = createEmptyLinks(W, H);
     int x = 0;
     int y = 0;
@@ -231,7 +284,7 @@ TEST(TwoPixelsTestSuite_links, RewindToPrevious) {
     int W = 0;
     int H = 0;
 
-    Color **board = createBoardAtLevel(&W, &H, 2);
+    Color **board = createTestBoard(&W, &H, 2);
     Direction **links = createEmptyLinks(W, H);
 
     links[0][1] = Direction::right_dir;
@@ -275,7 +328,7 @@ TEST(TwoPixelsTestSuite_links, RewindToNone) {
     int W = 0;
     int H = 0;
 
-    Color **board = createBoardAtLevel(&W, &H, 2);
+    Color **board = createTestBoard(&W, &H, 2);
     Direction **links = createEmptyLinks(W, H);
 
     links[1][1] = Direction::right_dir;
@@ -326,7 +379,7 @@ TEST(TwoPixelsTestSuite_cycle, square) {
     int W = 0;
     int H = 0;
 
-    Color **board = createBoardAtLevel(&W, &H, 2);
+    Color **board = createTestBoard(&W, &H, 2);
     Direction **links = createEmptyLinks(W, H);
 
     links[1][1] = Direction::left_dir;
@@ -358,7 +411,7 @@ TEST(TwoPixelsTestSuite_cycle, should_not_be_able_to_come_back) {
     int W = 0;
     int H = 0;
 
-    Color **board = createBoardAtLevel(&W, &H, 2);
+    Color **board = createTestBoard(&W, &H, 2);
     Direction **links = createEmptyLinks(W, H);
 
     int x = 0;
@@ -436,7 +489,7 @@ TEST(TwoPixelsTestSuite_consume, OK) {
     int W = 0;
     int H = 0;
 
-    Color **board = createBoardAtLevel(&W, &H, 4);
+    Color **board = createTestBoard(&W, &H, 4);
     Direction **links = createEmptyLinks(W, H);
 
 
@@ -461,7 +514,7 @@ TEST(TwoPixelsTestSuite_shiftDown, trivial) {
     int W = 0;
     int H = 0;
 
-    Color **board = createBoardAtLevel(&W, &H, 4);
+    Color **board = createTestBoard(&W, &H, 4);
 
     shiftDown(board, 0, 0);
 
@@ -472,7 +525,7 @@ TEST(TwoPixelsTestSuite_shiftDown, oneFloor) {
     int W = 0;
     int H = 0;
 
-    Color **board = createBoardAtLevel(&W, &H, 4);
+    Color **board = createTestBoard(&W, &H, 4);
     EXPECT_EQ(BETA, board[1][0]);
 
     shiftDown(board, 1, 1);
@@ -485,7 +538,7 @@ TEST(TwoPixelsTestSuite_shiftDown, twoFloors) {
     int W = 0;
     int H = 0;
 
-    Color **board = createBoardAtLevel(&W, &H, 4);
+    Color **board = createTestBoard(&W, &H, 4);
     EXPECT_EQ(BETA, board[1][0]);
     EXPECT_EQ(DELTA, board[1][1]);
 

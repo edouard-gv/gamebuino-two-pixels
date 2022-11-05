@@ -98,64 +98,25 @@ Color **createAlphaBoard(int w, int h) {
 }
 
 int countLevels() {
-    return 5;
-}
-
-Color **createBoardAtLevel(int *pW, int *pH, int level) {
-    if (level == 1) {
-        *pW = 2;
-        *pH = 3;
-        Color **newBoard = createAlphaBoard(*pW, *pH);
-        newBoard[0][2] = BETA;
-        return newBoard;
-    }
-
-    if (level == 2) {
-        *pW = 3;
-        *pH = 3;
-        return createAlphaBoard(*pW, *pH);
-    }
-
-    if (level == 3) {
-        *pW = 3;
-        *pH = 3;
-
-        Color **newBoard = createAlphaBoard(*pW, *pH);
-        newBoard[1][1] = BETA;
-        return newBoard;
-    }
-
-    if (level == 4) {
-        *pW = 2;
-        *pH = 3;
-
-        Color **newBoard = createAlphaBoard(*pW, *pH);
-        newBoard[0][0] = ALPHA;
-        newBoard[1][0] = BETA;
-        newBoard[0][1] = GAMMA;
-        newBoard[1][1] = DELTA;
-        return newBoard;
-    }
-
-    if (level == 5) {
-        *pW = 8;
-        *pH = 6;
-
-        auto **newBoard = new Color *[*pW];
-        for (int x = 0; x < *pW; ++x) {
-            newBoard[x] = new Color[*pH];
-            for (int y = 0; y < *pH; ++y) {
-                newBoard[x][y] = randomColor();
-            }
-        }
-        return newBoard;
-    }
-
-    return nullptr;
+    return 2;
 }
 
 int nextLevel(int level) {
     return (level % countLevels()) + 1;
+}
+
+Color **createBoardAtLevel(int *pW, int *pH, int level) {
+    *pW = 9;
+    *pH = 7;
+
+    auto **newBoard = new Color *[*pW];
+    for (int x = 0; x < *pW; ++x) {
+        newBoard[x] = new Color[*pH];
+        for (int y = 0; y < *pH; ++y) {
+            newBoard[x][y] = randomColor();
+        }
+    }
+    return newBoard;
 }
 
 Direction **createEmptyLinks(int w, int h) {
