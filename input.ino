@@ -55,6 +55,7 @@ void input() {
         if (!ignoreRelease) {
             level = nextLevel(level);
             resetLevel();
+            resetScore(score);
         } else {
             ignoreRelease = false;
         }
@@ -63,6 +64,7 @@ void input() {
     if (gb.buttons.held(BUTTON_B, 25)) {
         ignoreRelease = true;
         resetLevel();
+        resetScore(score);
     }
 }
 

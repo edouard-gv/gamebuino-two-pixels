@@ -2,8 +2,9 @@
 #include "TwoPixels_lib/twopixels.h"
 Color **board;
 Direction **links;
-int distributions[5];
-Color colorOrder[5];
+int distributions[COLOR_COUNT];
+Color colorOrder[COLOR_COUNT];
+bool score[COLOR_COUNT*3];
 int SCORE_SCALE = 63;
 
 bool ignoreRelease;
@@ -25,8 +26,9 @@ void setup() {
 
   ignoreRelease = false;
 
-  board = createBoardAtLevel(&W, &H, 1);
+  board = createBoardAtLevel(&W, &H, level);
   links = createEmptyLinks(W, H);
+  resetScore(score);
 }
 
 void loop() {

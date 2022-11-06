@@ -743,9 +743,8 @@ TEST(TwoPixelsTestSuite, indexOfColor) {
 
 TEST(TwoPixelsTestSuite_score, low) {
     bool score[3*COLOR_COUNT];
-    for (int i = 0; i < 3 * COLOR_COUNT; ++i) {
-        score[i] = false;
-    }
+    resetScore(score);
+    ASSERT_FALSE(score[6]);
 
     int W = 1;
     const int H = 100;
@@ -770,9 +769,8 @@ TEST(TwoPixelsTestSuite_score, low) {
 
 TEST(TwoPixelsTestSuite_score, medium) {
     bool score[3*COLOR_COUNT];
-    for (int i = 0; i < 3 * COLOR_COUNT; ++i) {
-        score[i] = false;
-    }
+    resetScore(score);
+    ASSERT_FALSE(score[1]);
 
     int W = 1;
     const int H = 100;
@@ -797,9 +795,8 @@ TEST(TwoPixelsTestSuite_score, medium) {
 
 TEST(TwoPixelsTestSuite_score, high) {
     bool score[15]; //3 * COLOR_COUNT
-    for (int i = 0; i < 15; ++i) {
-        score[i] = false;
-    }
+    resetScore(score);
+    ASSERT_FALSE(score[14]);
 
     int W = 1;
     const int H = 100;

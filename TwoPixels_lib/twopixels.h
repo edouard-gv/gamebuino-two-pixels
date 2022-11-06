@@ -417,6 +417,12 @@ void updateScore(Color **board, int W, int H, bool *score) {
     }
 }
 
+void resetScore(bool *score) {
+    for (int s = 0; s < COLOR_COUNT * 3; ++s) {
+        score[s] = false;
+    }
+}
+
 void countColors(Color *const *board, int W, int H, int *counts) {
     for (int k = 0; k < COLOR_COUNT; ++k) {
         counts[k] = 0;
