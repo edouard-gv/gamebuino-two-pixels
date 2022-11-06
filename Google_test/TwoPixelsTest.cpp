@@ -605,29 +605,94 @@ TEST(TwoPixelsTestSuite, countPositionsIShouldShiftDown) {
 }
 
 
-TEST(TwoPixelsTestSuite, distribution) {
+TEST(TwoPixelsTestSuite_distribution, no_reorder) {
 
     /**
      * dans l'ordre de distribution
      * puis dans l'ordre alphabétique grec
      */
+    int currentDistributions[] = {0, 0, 0, 0, 0};
+    Color distributionColorOrder[] = {ALPHA, BETA, GAMMA, DELTA, OMEGA};
+
+    int W = 1;
+    int H = 15;
+
+    Color boardLine[] =
+            {ALPHA,
+             BETA, BETA,
+             GAMMA, GAMMA, GAMMA,
+             DELTA, DELTA, DELTA, DELTA,
+             OMEGA, OMEGA, OMEGA, OMEGA, OMEGA};
+    Color *boardArray[] = {static_cast<Color *>(boardLine)};
+    Color **board = static_cast<Color **>(boardArray);
+
+    updateDistributions(board, W, H, currentDistributions, distributionColorOrder, 15);
+    ASSERT_THAT(currentDistributions, ElementsAre(1, 2, 3, 4, 5));
+    ASSERT_THAT(distributionColorOrder, ElementsAre(ALPHA, BETA, GAMMA, DELTA, OMEGA));
+}
+
+TEST(TwoPixelsTestSuite_distribution, reorder) {
+
+    /**
+     * dans l'ordre de distribution
+     * puis dans l'ordre alphabétique grec
+     */
+    int currentDistributions[] = {0, 0, 0, 0, 0};
+    Color distributionColorOrder[] = {ALPHA, BETA, GAMMA, DELTA, OMEGA};
+
+    int W = 1;
+    int H = 15;
+
+    Color boardLine[] =
+            {ALPHA, ALPHA, ALPHA, ALPHA, ALPHA,
+             BETA, BETA, BETA, BETA,
+             GAMMA, GAMMA, GAMMA,
+             DELTA, DELTA,
+             OMEGA};
+    Color *boardArray[] = {static_cast<Color *>(boardLine)};
+    Color **board = static_cast<Color **>(boardArray);
+
+    updateDistributions(board, W, H, currentDistributions, distributionColorOrder, 15);
+    ASSERT_THAT(currentDistributions, ElementsAre(1, 2, 3, 4, 5));
+    ASSERT_THAT(distributionColorOrder, ElementsAre(OMEGA, DELTA, GAMMA, BETA, ALPHA));
+}
+
+TEST(TwoPixelsTestSuite_distribution, rounding) {
+    int currentDistributions[] = {0, 0, 0, 0, 0};
+    Color distributionColorOrder[] = {ALPHA, BETA, GAMMA, DELTA, OMEGA};
 
     int W = 0;
     int H = 0;
+    
 
-    int currentScore[] = {0, 0, 0, 0, 0};
+    Color **board = createTestBoard(&W, &H, 3);
+    updateDistributions(board, W, H, currentDistributions, distributionColorOrder, 10);
+    ASSERT_THAT(currentDistributions, ElementsAre(0, 0, 0, 1, 9));
 
-    Color **board = createTestBoard(&W, &H, 2);
-    updateScore(board, W, H,currentScore, 7);
-    ASSERT_THAT(currentScore, ElementsAre(7, 0, 0, 0, 0));
-
-    updateScore(createTestBoard(&W, &H, 3), W, H, currentScore, 10);
-    ASSERT_THAT(currentScore, ElementsAre(9, 1, 0, 0, 0));
 }
 
 /**
  * Score : pièces de couleur en fonction des objectifs atteints
  */
+
+TEST(TwoPixelsTestSuite_distribution, sort) {
+    DistributionElement distributionElements[5];
+    for (int k = 0; k < COLOR_COUNT; ++k) {
+        DistributionElement element;
+        element.color = all_colors[k];
+        element.count = 4-k;
+        distributionElements[k] = element;
+    }
+
+    sortDistributionElements(distributionElements);
+
+    Color orderedColors[5];
+    for (int k = 0; k < COLOR_COUNT; ++k) {
+        orderedColors[k] = distributionElements[k].color;
+    }
+
+    ASSERT_THAT(orderedColors, ElementsAre(OMEGA, DELTA, GAMMA, BETA, ALPHA));
+}
 
 TEST(TwoPixelsTestSuite, sandbox) {
     EXPECT_EQ(-1 % 4, -1);

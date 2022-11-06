@@ -2,9 +2,9 @@
 #include "TwoPixels_lib/twopixels.h"
 Color **board;
 Direction **links;
-int score[] = {0, 0, 0, 0, 0};
-int SCORE_SCALE = 18
-;
+int distributions[5];
+Color colorOrder[5];
+int SCORE_SCALE = 18;
 
 bool ignoreRelease;
 

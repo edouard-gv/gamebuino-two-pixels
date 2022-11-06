@@ -328,7 +328,29 @@ int countPositionsIShouldShiftDown(Direction **links, int W, int H, int x, int y
     return (hasHolesBelowMe ? nbHolesInColumn : 0);
 }
 
-void updateScore(Color **board, int W, int H, int *score, int scale) {
+struct DistributionElement {
+    int count;
+    Color color;
+
+    bool isSmallerThan(DistributionElement d) {
+        return this->count <= d.count;
+    }
+};
+
+void sortDistributionElements(DistributionElement *elements) {
+    for (int k = COLOR_COUNT-1; k >=1 ; --k) {
+        for (int l = 0; l < k; ++l) {
+            if (elements[l + 1].isSmallerThan(elements[l])) {
+                DistributionElement tmpElement = elements[l + 1];
+                elements[l + 1] = elements[l];
+                elements[l] = tmpElement;
+            }
+        }
+    }
+
+}
+
+void updateDistributions(Color **board, int W, int H, int *distributions, Color *colorOrder, int scale) {
     int counts[] = {0,0,0,0,0};
     for (int i = 0; i < W; ++i) {
         for (int j = 0; j < H; ++j) {
@@ -341,8 +363,21 @@ void updateScore(Color **board, int W, int H, int *score, int scale) {
             }
         }
     }
+
+    DistributionElement distributionElements[5];
+
     for (int k = 0; k < COLOR_COUNT; ++k) {
-        score[k] = round(counts[k]/(float)(W*H)*scale);
+        DistributionElement element;
+        element.count = counts[k];
+        element.color = all_colors[k];
+        distributionElements[k] = element;
+    }
+
+    sortDistributionElements(distributionElements);
+
+    for (int k = 0; k < COLOR_COUNT; ++k) {
+        distributions[k] = round(distributionElements[k].count / (float)(W * H) * scale);
+        colorOrder[k] = distributionElements[k].color;
     }
 }
 

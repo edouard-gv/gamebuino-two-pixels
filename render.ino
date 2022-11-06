@@ -50,8 +50,8 @@ void render() {
   for (int k=0; k < COLOR_COUNT; ++k) {
     int base_x;
     int base_y;
-    gb.display.setColor(all_colors[k]);
-    gb.display.fillRect(k/3*(screen_W-3), (SCORE_SCALE+1) * (k % 3 + 1) - score[k], 3, score[k]);
+    gb.display.setColor(colorOrder[k]);
+    gb.display.fillRect(k/3*(screen_W-3), (SCORE_SCALE+1) * (k % 3 + 1) - distributions[k], 3, distributions[k]);
   }
 }
 
