@@ -8,13 +8,11 @@ int screen_H = gb.display.height();
 
 
 void render() {
-  int shift_W = (screen_W-W*DOT_DISTANCE)/2;
-  int shift_H = (screen_H-H*DOT_DISTANCE)/2;
   gb.display.clear();
   for (int x = 0; x < W; x++) {
     for (int y = 0; y < H; y++) {
-      int center_x = DOT_DISTANCE*x+HALF_DOT_DISTANCE+shift_W;
-      int center_y = DOT_DISTANCE*y+HALF_DOT_DISTANCE+shift_H;
+      int center_x = DOT_DISTANCE*x+HALF_DOT_DISTANCE-1;
+      int center_y = DOT_DISTANCE*y+HALF_DOT_DISTANCE-1;
       gb.display.setColor(board[x][y]);
       int shifts = countPositionsIShouldShiftDown(links, W, H, x, y);
       if (isDrifting && shifts > 0) {
@@ -43,15 +41,11 @@ void render() {
     }
   }
 
-  gb.display.setColor(DARKBLUE);
-  gb.display.drawRect(0, 0, screen_W, screen_H);
-  gb.display.drawRect(2, 2, screen_W-4, screen_H-4);
-
+  int pos_y = 0;
   for (int k=0; k < COLOR_COUNT; ++k) {
-    int base_x;
-    int base_y;
     gb.display.setColor(colorOrder[k]);
-    gb.display.fillRect(k/3*(screen_W-3), (SCORE_SCALE+1) * (k % 3 + 1) - distributions[k], 3, distributions[k]);
+    gb.display.fillRect(72, pos_y, 4, distributions[k]);
+    pos_y += distributions[k];
   }
 }
 

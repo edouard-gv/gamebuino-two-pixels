@@ -4,7 +4,7 @@ Color **board;
 Direction **links;
 int distributions[5];
 Color colorOrder[5];
-int SCORE_SCALE = 18;
+int SCORE_SCALE = 63;
 
 bool ignoreRelease;
 
