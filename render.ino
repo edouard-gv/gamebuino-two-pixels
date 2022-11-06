@@ -9,6 +9,8 @@ int screen_H = gb.display.height();
 
 void render() {
   gb.display.clear();
+
+  //board
   for (int x = 0; x < W; x++) {
     for (int y = 0; y < H; y++) {
       int center_x = DOT_DISTANCE*x+HALF_DOT_DISTANCE-1;
@@ -41,6 +43,7 @@ void render() {
     }
   }
 
+  //distributions
   int pos_y = 0;
   for (int k=0; k < COLOR_COUNT; ++k) {
     gb.display.setColor(colorOrder[k]);
@@ -48,6 +51,14 @@ void render() {
     pos_y += distributions[k];
   }
 
+  //targets
+  gb.display.setColor(colorOrder[0]);
+  gb.display.drawCircle(78, 3, 1);
+  gb.display.setColor(colorOrder[COLOR_COUNT-1]);
+  gb.display.drawCircle(78, 12, 1);
+  gb.display.drawCircle(78, 31, 1);
+
+  //scores
   int pos_x = 0;
   for (int s=0; s < COLOR_COUNT*3; ++s) {
     gb.display.setColor(all_colors[s/3]);
