@@ -89,18 +89,6 @@ Color randomColor() {
     return OMEGA;
 }
 
-
-Color **createAlphaBoard(int w, int h) {
-    auto **newBoard = new Color *[w];
-    for (int x = 0; x < w; ++x) {
-        newBoard[x] = new Color[h];
-        for (int y = 0; y < h; ++y) {
-            newBoard[x][y] = ALPHA;
-        }
-    }
-    return newBoard;
-}
-
 int countLevels() {
     return 2;
 }

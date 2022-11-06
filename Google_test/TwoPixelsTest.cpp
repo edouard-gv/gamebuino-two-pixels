@@ -33,6 +33,17 @@ void assertExpectedBoard(Color **expected, Color **board, int W, int H) {
     }
 }
 
+Color **createAlphaBoard(int w, int h) {
+    auto **newBoard = new Color *[w];
+    for (int x = 0; x < w; ++x) {
+        newBoard[x] = new Color[h];
+        for (int y = 0; y < h; ++y) {
+            newBoard[x][y] = ALPHA;
+        }
+    }
+    return newBoard;
+}
+
 Color **createTestBoard(int *pW, int *pH, int inputNumber) {
     if (inputNumber == 1) {
         *pW = 2;
@@ -594,7 +605,12 @@ TEST(TwoPixelsTestSuite, countPositionsIShouldShiftDown) {
 }
 
 
-TEST(TwoPixelsTestSuite, scores) {
+TEST(TwoPixelsTestSuite, distribution) {
+
+    /**
+     * dans l'ordre de distribution
+     * puis dans l'ordre alphabétique grec
+     */
 
     int W = 0;
     int H = 0;
@@ -608,6 +624,10 @@ TEST(TwoPixelsTestSuite, scores) {
     updateScore(createTestBoard(&W, &H, 3), W, H, currentScore, 10);
     ASSERT_THAT(currentScore, ElementsAre(9, 1, 0, 0, 0));
 }
+
+/**
+ * Score : pièces de couleur en fonction des objectifs atteints
+ */
 
 TEST(TwoPixelsTestSuite, sandbox) {
     EXPECT_EQ(-1 % 4, -1);
