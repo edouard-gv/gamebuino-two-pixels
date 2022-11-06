@@ -657,6 +657,45 @@ TEST(TwoPixelsTestSuite_distribution, reorder) {
     ASSERT_THAT(distributionColorOrder, ElementsAre(OMEGA, DELTA, GAMMA, BETA, ALPHA));
 }
 
+TEST(TwoPixelsTestSuite_distribution, reorder_with_equality) {
+
+    /**
+     * dans l'ordre de distribution
+     * puis dans l'ordre alphabétique grec
+     */
+    int currentDistributionsA[5];
+    Color distributionColorOrderA[5];
+    int currentDistributionsB[5];
+    Color distributionColorOrderB[5];
+
+    int W = 1;
+    int H = 15;
+
+    Color boardLineA[] =
+            {ALPHA, ALPHA, ALPHA, ALPHA, ALPHA,
+             BETA, BETA, BETA, BETA,
+             GAMMA, GAMMA,
+             DELTA, DELTA,
+             OMEGA};
+    Color boardLineB[] =
+            {ALPHA,
+             BETA, BETA,
+             GAMMA, GAMMA, GAMMA,
+             DELTA, DELTA, DELTA,
+             OMEGA, OMEGA, OMEGA, OMEGA, OMEGA};
+    Color *boardArrayA[] = {static_cast<Color *>(boardLineA)};
+    Color **boardA = static_cast<Color **>(boardArrayA);
+    Color *boardArrayB[] = {static_cast<Color *>(boardLineB)};
+    Color **boardB = static_cast<Color **>(boardArrayB);
+
+    updateDistributions(boardA, W, H, currentDistributionsA, distributionColorOrderA, 15);
+    updateDistributions(boardB, W, H, currentDistributionsB, distributionColorOrderB, 15);
+    ASSERT_THAT(currentDistributionsA, ElementsAre(1, 2, 2, 4, 5));
+    ASSERT_THAT(distributionColorOrderA, ElementsAre(OMEGA, GAMMA, DELTA, BETA, ALPHA));
+    ASSERT_THAT(currentDistributionsB, ElementsAre(1, 2, 3, 3, 5));
+    ASSERT_THAT(distributionColorOrderB, ElementsAre(ALPHA, BETA, GAMMA, DELTA, OMEGA));
+}
+
 TEST(TwoPixelsTestSuite_distribution, rounding) {
     int currentDistributions[] = {0, 0, 0, 0, 0};
     Color distributionColorOrder[] = {ALPHA, BETA, GAMMA, DELTA, OMEGA};
@@ -692,6 +731,14 @@ TEST(TwoPixelsTestSuite_distribution, sort) {
     }
 
     ASSERT_THAT(orderedColors, ElementsAre(OMEGA, DELTA, GAMMA, BETA, ALPHA));
+}
+
+TEST(TwoPixelsTestSuite, indexOfColor) {
+    EXPECT_EQ(0, indexOf(ALPHA));
+    EXPECT_EQ(1, indexOf(BETA));
+    EXPECT_EQ(2, indexOf(GAMMA));
+    EXPECT_EQ(3, indexOf(DELTA));
+    EXPECT_EQ(4, indexOf(OMEGA));
 }
 
 TEST(TwoPixelsTestSuite, sandbox) {

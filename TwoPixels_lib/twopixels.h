@@ -51,42 +51,56 @@ enum Direction {
 
 Direction map(Command command) {
     switch (command) {
-        case Command::left_cmd: return Direction::left_dir;
-        case Command::right_cmd: return Direction::right_dir;
-        case Command::up_cmd: return Direction::up_dir;
-        case Command::down_cmd: return Direction::down_dir;
-        default: return Direction::none;
+        case Command::left_cmd:
+            return Direction::left_dir;
+        case Command::right_cmd:
+            return Direction::right_dir;
+        case Command::up_cmd:
+            return Direction::up_dir;
+        case Command::down_cmd:
+            return Direction::down_dir;
+        default:
+            return Direction::none;
     }
 }
 
 Command map(Direction direction) {
     switch (direction) {
-        case Direction::left_dir: return Command::left_cmd;
-        case Direction::right_dir: return Command::right_cmd;
-        case Direction::up_dir: return Command::up_cmd;
-        case Direction::left_lock: return Command::left_cmd;
-        case Direction::right_lock: return Command::right_cmd;
-        case Direction::up_lock: return Command::up_cmd;
-        default: return Command::down_cmd;
+        case Direction::left_dir:
+            return Command::left_cmd;
+        case Direction::right_dir:
+            return Command::right_cmd;
+        case Direction::up_dir:
+            return Command::up_cmd;
+        case Direction::left_lock:
+            return Command::left_cmd;
+        case Direction::right_lock:
+            return Command::right_cmd;
+        case Direction::up_lock:
+            return Command::up_cmd;
+        default:
+            return Command::down_cmd;
     }
 }
 
 
 Color randomColor() {
+    return all_colors[rand() % 5];
+}
 
-    switch (rand() % 5) {
-        case 0:
-            return ALPHA;
-        case 1:
-            return BETA;
-        case 2:
-            return GAMMA;
-        case 3:
-            return DELTA;
-        case 4:
-            return OMEGA;
+int indexOf(Color color) {
+    switch (color) {
+        case ALPHA:
+            return 0;
+        case BETA:
+            return 1;
+        case GAMMA:
+            return 2;
+        case DELTA:
+            return 3;
+        default :
+            return 4; //OMEGA
     }
-    return OMEGA;
 }
 
 int countLevels() {
@@ -333,12 +347,17 @@ struct DistributionElement {
     Color color;
 
     bool isSmallerThan(DistributionElement d) {
-        return this->count <= d.count;
+        if (this->count < d.count) {
+            return true;
+        } else if (this->count == d.count && indexOf(this->color) <= indexOf(d.color)) {
+            return true;
+        }
+        return false;
     }
 };
 
 void sortDistributionElements(DistributionElement *elements) {
-    for (int k = COLOR_COUNT-1; k >=1 ; --k) {
+    for (int k = COLOR_COUNT - 1; k >= 1; --k) {
         for (int l = 0; l < k; ++l) {
             if (elements[l + 1].isSmallerThan(elements[l])) {
                 DistributionElement tmpElement = elements[l + 1];
@@ -351,15 +370,25 @@ void sortDistributionElements(DistributionElement *elements) {
 }
 
 void updateDistributions(Color **board, int W, int H, int *distributions, Color *colorOrder, int scale) {
-    int counts[] = {0,0,0,0,0};
+    int counts[] = {0, 0, 0, 0, 0};
     for (int i = 0; i < W; ++i) {
         for (int j = 0; j < H; ++j) {
             switch (board[i][j]) {
-                case ALPHA: counts[0]++; break;
-                case BETA: counts[1]++; break;
-                case GAMMA: counts[2]++; break;
-                case DELTA: counts[3]++; break;
-                case OMEGA: counts[4]++; break;
+                case ALPHA:
+                    counts[0]++;
+                    break;
+                case BETA:
+                    counts[1]++;
+                    break;
+                case GAMMA:
+                    counts[2]++;
+                    break;
+                case DELTA:
+                    counts[3]++;
+                    break;
+                case OMEGA:
+                    counts[4]++;
+                    break;
             }
         }
     }
@@ -376,7 +405,7 @@ void updateDistributions(Color **board, int W, int H, int *distributions, Color 
     sortDistributionElements(distributionElements);
 
     for (int k = 0; k < COLOR_COUNT; ++k) {
-        distributions[k] = round(distributionElements[k].count / (float)(W * H) * scale);
+        distributions[k] = round(distributionElements[k].count / (float) (W * H) * scale);
         colorOrder[k] = distributionElements[k].color;
     }
 }
