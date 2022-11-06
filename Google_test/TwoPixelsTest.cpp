@@ -741,6 +741,87 @@ TEST(TwoPixelsTestSuite, indexOfColor) {
     EXPECT_EQ(4, indexOf(OMEGA));
 }
 
+TEST(TwoPixelsTestSuite_score, low) {
+    bool score[3*COLOR_COUNT];
+    for (int i = 0; i < 3 * COLOR_COUNT; ++i) {
+        score[i] = false;
+    }
+
+    int W = 1;
+    const int H = 100;
+
+    Color boardLine[H];
+    for (int j = 0; j < H; ++j) {
+        if (j < 6) boardLine[j] = GAMMA;
+        else if (j < 80) boardLine[j] = BETA;
+        else boardLine[j] = DELTA;
+    }
+
+    Color *boardArray[] = {static_cast<Color *>(boardLine)};
+    Color **board = static_cast<Color **>(boardArray);
+
+    updateScore(board, W, H, score);
+    ASSERT_FALSE(score[6]);
+
+    board[0][5] = BETA;
+    updateScore(board, W, H, score);
+    ASSERT_TRUE(score[6]);
+}
+
+TEST(TwoPixelsTestSuite_score, medium) {
+    bool score[3*COLOR_COUNT];
+    for (int i = 0; i < 3 * COLOR_COUNT; ++i) {
+        score[i] = false;
+    }
+
+    int W = 1;
+    const int H = 100;
+
+    Color boardLine[H];
+    for (int j = 0; j < H; ++j) {
+        if (j < 49) boardLine[j] = ALPHA;
+        else if (j < 80) boardLine[j] = BETA;
+        else boardLine[j] = DELTA;
+    }
+
+    Color *boardArray[] = {static_cast<Color *>(boardLine)};
+    Color **board = static_cast<Color **>(boardArray);
+
+    updateScore(board, W, H, score);
+    ASSERT_FALSE(score[1]);
+
+    board[0][49] = ALPHA;
+    updateScore(board, W, H, score);
+    ASSERT_TRUE(score[1]);
+}
+
+TEST(TwoPixelsTestSuite_score, high) {
+    bool score[15]; //3 * COLOR_COUNT
+    for (int i = 0; i < 15; ++i) {
+        score[i] = false;
+    }
+
+    int W = 1;
+    const int H = 100;
+
+    Color boardLine[H];
+    for (int j = 0; j < H; ++j) {
+        if (j < 79) boardLine[j] = OMEGA;
+        else if (j < 95) boardLine[j] = BETA;
+        else boardLine[j] = DELTA;
+    }
+
+    Color *boardArray[] = {static_cast<Color *>(boardLine)};
+    Color **board = static_cast<Color **>(boardArray);
+
+    updateScore(board, W, H, score);
+    ASSERT_FALSE(score[14]);
+
+    board[0][80] = OMEGA;
+    updateScore(board, W, H, score);
+    ASSERT_TRUE(score[14]);
+}
+
 TEST(TwoPixelsTestSuite, sandbox) {
     EXPECT_EQ(-1 % 4, -1);
 }

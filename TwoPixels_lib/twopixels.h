@@ -30,6 +30,10 @@ enum class Color : uint16_t {
 
 #endif //_GAMEBUINO_META_GRAPHICS_H_
 
+const int THRESHOLD_MEDIUM = 50;
+const int THRESHOLD_HIGH = 80;
+const int THRESHOLD_LOW = 5;
+
 const Color ALPHA = Color::yellow;
 const Color BETA = Color::blue;
 const Color GAMMA = Color::red;
@@ -356,6 +360,8 @@ struct DistributionElement {
     }
 };
 
+void countColors(Color *const *board, int W, int H, int *counts);
+
 void sortDistributionElements(DistributionElement *elements) {
     for (int k = COLOR_COUNT - 1; k >= 1; --k) {
         for (int l = 0; l < k; ++l) {
@@ -370,7 +376,51 @@ void sortDistributionElements(DistributionElement *elements) {
 }
 
 void updateDistributions(Color **board, int W, int H, int *distributions, Color *colorOrder, int scale) {
-    int counts[] = {0, 0, 0, 0, 0};
+    int counts[COLOR_COUNT];
+    DistributionElement distributionElements[5];
+
+    countColors(board, W, H, counts);
+
+    for (int k = 0; k < COLOR_COUNT; ++k) {
+        DistributionElement element;
+        element.count = counts[k];
+        element.color = all_colors[k];
+        distributionElements[k] = element;
+    }
+
+    sortDistributionElements(distributionElements);
+
+    for (int k = 0; k < COLOR_COUNT; ++k) {
+        distributions[k] = round(distributionElements[k].count / (float) (W * H) * scale);
+        colorOrder[k] = distributionElements[k].color;
+    }
+}
+
+void updateScore(Color **board, int W, int H, bool *score) {
+    int counts[COLOR_COUNT];
+    countColors(board, W, H, counts);
+
+    for (int k = 0; k < COLOR_COUNT; ++k) {
+        if (counts[k]*100 <= THRESHOLD_LOW*(W*H)) {
+            score[k*3] = true;
+        }
+    }
+    for (int k = 0; k < COLOR_COUNT; ++k) {
+        if (counts[k]*100 >= THRESHOLD_MEDIUM * (W * H)) {
+            score[k*3+1] = true;
+        }
+    }
+    for (int k = 0; k < COLOR_COUNT; ++k) {
+        if (counts[k]*100 >= THRESHOLD_HIGH*(W*H)) {
+            score[k*3+2] = true;
+        }
+    }
+}
+
+void countColors(Color *const *board, int W, int H, int *counts) {
+    for (int k = 0; k < COLOR_COUNT; ++k) {
+        counts[k] = 0;
+    }
     for (int i = 0; i < W; ++i) {
         for (int j = 0; j < H; ++j) {
             switch (board[i][j]) {
@@ -391,22 +441,6 @@ void updateDistributions(Color **board, int W, int H, int *distributions, Color 
                     break;
             }
         }
-    }
-
-    DistributionElement distributionElements[5];
-
-    for (int k = 0; k < COLOR_COUNT; ++k) {
-        DistributionElement element;
-        element.count = counts[k];
-        element.color = all_colors[k];
-        distributionElements[k] = element;
-    }
-
-    sortDistributionElements(distributionElements);
-
-    for (int k = 0; k < COLOR_COUNT; ++k) {
-        distributions[k] = round(distributionElements[k].count / (float) (W * H) * scale);
-        colorOrder[k] = distributionElements[k].color;
     }
 }
 
