@@ -19,8 +19,6 @@ bool hasChanged=true;
 bool isDrifting=false;
 int driftStep = 0;
 
-int level = 1;
-
 bool ignoreRelease;
 
 const int SAVE_GAME_IS_SAVED = 0;
@@ -50,7 +48,7 @@ void setup() {
 
   ignoreRelease = false;
 
-  board = createBoardAtLevel(&W, &H, level);
+  board = createBoard(&W, &H);
   links = createEmptyLinks(W, H);
   resetScore(score);
 

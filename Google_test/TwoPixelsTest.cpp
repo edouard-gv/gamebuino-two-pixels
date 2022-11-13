@@ -97,31 +97,6 @@ Color **createTestBoard(int *pW, int *pH, int inputNumber) {
     return nullptr;
 }
 
-TEST(TwoPixelsTestSuite_levels, Initialize) {
-    int W = 0;
-    int H = 0;
-
-    auto **expected = new Color *[2]{
-            new Color[3]{ALPHA, ALPHA, BETA},
-            new Color[3]{ALPHA, ALPHA, ALPHA}
-    };
-
-    Color **board = createTestBoard(&W, &H, 1);
-
-    EXPECT_EQ(2, W);
-    EXPECT_EQ(3, H);
-
-    assertExpectedBoard(expected, board, W, H);
-
-    deleteBoard(board, W);
-    deleteBoard(expected, W);
-}
-
-TEST(TwoPixelsTestSuite_levels, nextLevel) {
-    EXPECT_EQ(2, nextLevel(1));
-    EXPECT_EQ(countLevels(), nextLevel(countLevels() - 1));
-    EXPECT_EQ(1, nextLevel(countLevels()));
-}
 
 TEST(TwoPixelsTestSuite_move, OKs) {
     int W = 0;

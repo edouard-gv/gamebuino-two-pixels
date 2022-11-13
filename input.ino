@@ -1,10 +1,12 @@
-void resetLevel() {
+void resetGame() {
   deleteBoard(board, W);
   deleteLinks(links, W);
-  board = createBoardAtLevel(&W, &H, level);
+  board = createBoard(&W, &H);
   links = createEmptyLinks(W, H);
   cursor_x = 0;
   cursor_y = 0;
+
+  resetScore(score);
 }
 
 void input() {
@@ -51,22 +53,17 @@ void input() {
       }
     }
 
+    if (gb.buttons.held(BUTTON_B, 25)) {
+        ignoreRelease = true;
+        resetGame();
+    }
 
     if (gb.buttons.released(BUTTON_B)) {
-        if (!ignoreRelease) {
-            level = nextLevel(level);
-            resetLevel();
-            resetScore(score);
-        } else {
+        if (ignoreRelease) {
             ignoreRelease = false;
         }
     }
 
-    if (gb.buttons.held(BUTTON_B, 25)) {
-        ignoreRelease = true;
-        resetLevel();
-        resetScore(score);
-    }
 }
 
 

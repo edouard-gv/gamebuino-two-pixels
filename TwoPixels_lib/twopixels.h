@@ -107,15 +107,8 @@ int indexOf(Color color) {
     }
 }
 
-int countLevels() {
-    return 2;
-}
 
-int nextLevel(int level) {
-    return (level % countLevels()) + 1;
-}
-
-Color **createBoardAtLevel(int *pW, int *pH, int level) {
+Color **createBoard(int *pW, int *pH) {
     *pW = 9;
     *pH = 7;
 
